@@ -66,7 +66,7 @@ var map = function (readable, map) {
 
 join them together!
 
-```
+``` js
 logger(
   map(randomReadable, function (e) {
     return Math.round(e * 1000)
