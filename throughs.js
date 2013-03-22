@@ -1,17 +1,33 @@
-var map = function (map) {
+var k = 0
+var map = exports.map = 
+function (read, map) {
+  var _k = k++
   map = map || function (e) {return e}
-  return function (readable) {
-    return function (reader) {
-      return reader(function (end, cb) {
-        readable(end, function (end, data) {
-          cb(end, map(data))
-        })
-      })
-    }
+  return function (end, cb) {
+    read(end, function (end, data) {
+      cb(end, !end ? map(data) : null)
+    })
   }
 }
 
-var dumb = function (read, op) {
+var filter = exports.filter =
+function (read, test) {
+  //regexp
+  if('object' === typeof test
+    && 'function' === typeof test.test)
+    test = test.test.bind(test)
+
+  return function next (end, cb) {
+    read(end, function (end, data) {
+      if(!end && !test(data))
+        return next(end, cb)
+      cb(end, data)
+    })
+  }
+}
+
+var through = exports.through = 
+function (read, op) {
   return function (end, cb) {
     return read(end, function (end, data) {
       op && op(data)
@@ -20,7 +36,8 @@ var dumb = function (read, op) {
   }
 }
 
-var take = function (read, test) {
+var take = exports.take =
+function (read, test) {
   var ended = false
   if('number' === typeof test) {
     var n = test; test = function () {
@@ -39,9 +56,10 @@ var take = function (read, test) {
   }
 }
 
-
 var nextTick = process.nextTick
-var highWaterMark = function (read, highWaterMark) {
+
+var highWaterMark = exports.highWaterMark = 
+function (read, highWaterMark) {
   var buffer = [], waiting = [], ended, reading = false
   highWaterMark = highWaterMark || 10
 
