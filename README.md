@@ -9,6 +9,24 @@ data is pulled out of the source stream, into the destination.
 
 `pull-stream` is an minimal take on pull streams.
 
+## Examples
+
+What if implementing a stream was this simple:
+
+### Pipeable
+
+``` js
+var pipeable = require('pull-stream').pipeable
+
+var createStream = pipeable(function (readable) {
+  return function read (end, cb) {
+    readable(end, cb)
+  }
+})
+```
+
+### Readable & Reader vs. Readable & Writable
+
 Instead of a readable stream, and a writable stream, there is a `readable` stream,
 and a `reader` stream.
 
@@ -53,6 +71,8 @@ that do input _and_ output.
 
 Simple!
 
+### Duplex
+
 ``` js
 var map = function (readable, map) {
   //return a readable function!
@@ -66,6 +86,8 @@ var map = function (readable, map) {
 
 join them together!
 
+### function composition style "pipe"
+
 ``` js
 logger(
   map(randomReadable, function (e) {
@@ -75,6 +97,8 @@ logger(
 
 That is good -- but it's kinda weird, because we are used to left to right syntax
 for streams... `ls | grep | wc -l`
+
+### pipeability
 
 So, we want to pass in the `readable` and `reader` function!
 It needs to be that order, so that it reads left to right.
@@ -117,6 +141,9 @@ var reader = function (readable) {
 ```
 
 The `reader` stream is the same as before!
+
+
+### Left-to-Right pipe
 
 Now PIPE THEM TOGETHER!
 
