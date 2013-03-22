@@ -2,11 +2,15 @@ var tape       = require('tape')
 
 var pstrm      = require('../')
 
-var readArray  = pstrm.readArray
-var writeArray = pstrm.writeArray
+var sources    = require('../sources')
+var sinks      = require('../sinks')
 
-var sourcePipeable = pstrm.sourcePipeable
+var readArray  = sources.readArray
+var writeArray = sinks.writeArray
+
+var pipeableSource = pstrm.pipeableSource
 var pipeable       = pstrm.pipeable
+var pipeableSink   = pstrm.pipeableSink
 
 function arrayReader (read, cb) {
   var array = []
@@ -55,12 +59,12 @@ tape('readToArray', function (t) {
 
 tape('pipe', function (t) {
   var array = [1, 2, 3]
-  var read = sourcePipeable(readArray)(array)
+  var read = pipeableSource(readArray)(array)
   
   t.equal('function', typeof read)
   t.equal('function', typeof read.pipe)
 
-  read.pipe(pipeable(arrayReader)(function (err, _array) {
+  read.pipe(pipeableSink(arrayReader)(function (err, _array) {
     t.equal(err, null)
     t.deepEqual(_array, array)
     t.end()
@@ -69,8 +73,10 @@ tape('pipe', function (t) {
 
 tape('pipe2', function (t) {
   var array = [1, 2, 3]
-  var read = sourcePipeable(readArray)(array)
-  arrayWriter = pipeable(writeArray)
+  console.log('readArray', readArray)
+  var read = pipeableSource(readArray)(array)
+  console.log('reader?', read)
+  arrayWriter = pipeableSink(writeArray)
 
   t.equal('function', typeof read)
   t.equal('function', typeof read.pipe)
