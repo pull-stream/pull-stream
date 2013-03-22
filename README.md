@@ -37,7 +37,7 @@ var logger = function (readable) {
     if(end) throw err
 
     console.log(data)
-    readable(err, next)
+    readable(end, next)
   })
 }
 ```
