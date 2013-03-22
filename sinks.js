@@ -12,10 +12,10 @@ var drain = exports.drain = function (read, op) {
   return read(null, function next (err, data) {
     if(err) return
     op && op(data)
-    readable(null, next)
+    read(null, next)
   })
 }
 
-var log = function (read) {
+var log = exports.log = function (read) {
   return drain(read, console.log.bind(console))
 }
