@@ -18,9 +18,9 @@ What if implementing a stream was this simple:
 ``` js
 var pipeable = require('pull-stream').pipeable
 
-var createStream = pipeable(function (readable) {
-  return function read (end, cb) {
-    readable(end, cb)
+var createStream = pipeable(function (read) {
+  return function (end, cb) {
+    read(end, cb)
   }
 })
 ```
@@ -37,11 +37,13 @@ if the user passes in `end`, then stop returning data.
 
 ``` js
 var i = 100
-var randomReadable = function (end, cb) {
-  if(end) return cb(end)
-  //only read 100 times
-  if(i-- < 0) return cb(true)
-  cb(null, Math.random())
+var randomReadable = function () {
+  return function (end, cb) {
+    if(end) return cb(end)
+    //only read 100 times
+    if(i-- < 0) return cb(true)
+    cb(null, Math.random())
+  }
 }
 ```
 
@@ -49,21 +51,22 @@ A `reader`, is just a function that calls a readable.
 If you get an `end` stop reading.
 
 ``` js
-var logger = function (readable) {
-  readable(null, function next(end, data) {
-    if(end === true) return
-    if(end) throw err
+var logger = function (read) {
+    read(null, function next(end, data) {
+      if(end === true) return
+      if(end) throw err
 
-    console.log(data)
-    readable(end, next)
-  })
+      console.log(data)
+      readable(end, next)
+    })
+  }
 }
 ```
 
 These can be connected together by passing the `readable` to the `reader`
 
 ``` js
-logger(randomReadable)
+logger(randomReadable())
 ```
 
 Thats cool, but to be useful, we need transformation streams,
@@ -74,10 +77,10 @@ Simple!
 ### Duplex
 
 ``` js
-var map = function (readable, map) {
+var map = function (read, map) {
   //return a readable function!
   return function (end, cb) {
-    readable(end, function (end, data) {
+    read(end, function (end, data) {
       cb(end, data != null ? map(data) : null)
     })
   }
@@ -90,68 +93,114 @@ join them together!
 
 ``` js
 logger(
-  map(randomReadable, function (e) {
+  map(randomReadable(), function (e) {
     return Math.round(e * 1000)
   }))
 ```
 
-That is good -- but it's kinda weird, because we are used to left to right syntax
+That is good -- but it's kinda weird,
+because we are used to left to right syntax
 for streams... `ls | grep | wc -l`
 
 ### pipeability
 
-So, we want to pass in the `readable` and `reader` function!
-It needs to be that order, so that it reads left to right.
-
-A basic duplex function would look like this:
+Every pipeline must go from a `source` to a `sink`.
+Data will not start moving until the whole thing is connected.
 
 ``` js
-var i = 100
-var multiply = function (readable) {
-  return function (reader) {
-    return reader(function (end, cb) {
-      //insert your own code in here!
-      readable(end, function (end, data) {
-        cb(end,  Math.round(data * 1000))
-      })
+source.pipe(through).pipe(sink)
+```
+
+When setting up pipeability, you must use the right
+function, so `pipe` has the right behavior.
+
+Use `pipeable`, `pipeableSource` and `pipeableSink`,
+to add pipeability to your pull-streams.
+
+#### Sources
+
+``` js
+//infinite stream of random noise
+var pull = require('pull-stream')
+
+var infinite = pull.pipeableSource(function () {
+  return function (end, cb) {
+    if(end) return cb(end)
+    cb(null, Math.random())
+  }
+})
+
+//create an instace like this
+
+var infStream = infinite()
+```
+
+#### Throughs/Transforms
+
+``` js
+//map!
+var pull = require('pull-stream')
+
+var map = pull.pipeable(function (read, map) {
+  return function (end, cb) {
+    read(end, function (end, data) {
+      if(end) return cb(end)
+      cb(null, map(data))
     })
   }
-}
-``` 
+})
 
-A stream that is only readable is simpler:
-``` js
-var randomReadable2 = function (reader) {
-  return reader(function (end, cb) {
-    cb(end, 'hello!')
-  })
-}
+//create an instance like this:
+
+var mapStream = map(function (d) { return d * 100 })
 ```
 
-and a "sink" stream, that can only read, is the same as before!
+### Sinks
 
 ``` js
-var reader = function (readable) {
-  readable(null, function (end, data) {
-    if(end === true) return
-    if(end) throw end
-    readable(end, data)
+var pull = require('pull-stream')
+
+var log = pull.pipeableSink(function (read, done) {
+  read(null, function next(end, data) {
+    if(!end) {
+      console.log(data)
+      return setTimeout(function () {
+        read(null, next)
+      }, 200)
+    }
+    else //callback!
+      done(end == true ? null : end)
   })
-}
+})
 ```
-
-The `reader` stream is the same as before!
-
-
-### Left-to-Right pipe
 
 Now PIPE THEM TOGETHER!
 
 ``` js
-randomReader2 (multiply) (logger)
+infinite()
+  .pipe(map(function (d) { return d * 100 }))
+  .pipe(log())
 ```
 
 JUST LIKE THAT!
+
+## More Cool Stuff
+
+What if you could do this?
+
+``` js
+var trippleThrough = 
+  through1()
+    .pipe(through2())
+    .pipe(through3())
+//THE THREE THROUGHS BECOME ONE
+
+source()
+  .pipe(trippleThrough)
+  .pipe(sink())
+
+//and then pipe it later!
+```
 
 ## License
 
