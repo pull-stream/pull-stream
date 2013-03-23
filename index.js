@@ -66,6 +66,7 @@ function pipeableSink(createReader) {
   }
 }
 
+/*
 var destack = function (n) {
   var i = 0; n = n || 10, waiting = [], queued = false, ended = false
   return function (readable) {
@@ -84,67 +85,4 @@ var destack = function (n) {
     }
   }
 }
-
-
-function writeArray(cb) {
-  var array = []
-  return function (readable) {
-    ;(function next () {
-      return readable(null, function (end, data) {
-        if(end) return cb(end == true ? null : end, array)
-        array.push(data)
-        next()
-      })
-    })()
-    return function () { throw new Error('write-only') }
-  }
-}
-
-/*
-var compose = function () {
-  var streams = [].slice.call(arguments)
-  return function (readable) {
-    return function (reader) {
-      while(streams.length)
-        readable = streams.shift()(readable)
-
-      return reader(readable)
-    }
-  }
-}
-
-var duplex = function (_reader, _readable) {
-  return function (readable) {
-    return function (reader) {
-      _reader(readable);
-      reader(_readable);
-    }
-  }
-}
 */
-
-if(!module.parent)
-
-  count()
-    (destack ())
-    (take(20))
-    (highWaterMark(2))
-    /*(compose(map(function (e) {
-        return e * 1000
-      }),
-      map(function (e) {
-        return Math.round(e / 3)
-      }))
-    )*/
-    (writeArray(console.log))
-//    (drain(console.log))
-
-/*  (function (readable) {
-    return readable(null, function next (e, d) {
-      if (e) return
-      return readable(e, next)
-    })
-  })*/
-//*/
-//  drain (destack (count()), console.log)
-
