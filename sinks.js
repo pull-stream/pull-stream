@@ -15,14 +15,14 @@ var onEnd = exports.onEnd = function (read, done) {
   })
 }
 
-var drain = exports.drain = function (read, op) {
+var drain = exports.drain = function (read, op, done) {
   return read(null, function next (err, data) {
-    if(err) return
+    if(err) return done && done(err)
     op && op(data)
     read(null, next)
   })
 }
 
-var log = exports.log = function (read) {
-  return drain(read, console.log.bind(console))
+var log = exports.log = function (read, done) {
+  return drain(read, console.log.bind(console), done)
 }
