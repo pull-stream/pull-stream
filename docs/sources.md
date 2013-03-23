@@ -4,7 +4,7 @@ A source is a stream that is not writable.
 You *must* have a source at the start of a pipeline
 for data to move through.
 
-in general
+in general:
 
 ``` js
 source()
