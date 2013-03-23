@@ -30,7 +30,7 @@ var through = exports.through =
 function (read, op) {
   return function (end, cb) {
     return read(end, function (end, data) {
-      op && op(data)
+      if(!end) op && op(data)
       cb(end, data)
     })
   }
