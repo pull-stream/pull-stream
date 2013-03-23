@@ -8,6 +8,13 @@ var writeArray = exports.writeArray = function (read, cb) {
   })
 }
 
+var onEnd = exports.onEnd = function (read, done) {
+ return read(null, function next (err, data) {
+    if(err) return done(err)
+    read(null, next)
+  })
+}
+
 var drain = exports.drain = function (read, op) {
   return read(null, function next (err, data) {
     if(err) return
