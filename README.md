@@ -4,7 +4,7 @@ Experimental Minimal Pipeable Pull-stream
 
 In [classic-streams](https://github.com/joyent/node/blob/v0.8/doc/api/stream.markdown),
 streams _push_ data to the next stream in the pipeline.
-In [new-streams](https://github.com/joyent/node/blob/v0.8/doc/api/stream.markdown),
+In [new-streams](https://github.com/joyent/node/blob/v0.10/doc/api/stream.markdown),
 data is pulled out of the source stream, into the destination.
 
 `pull-stream` is an minimal take on pull streams.
