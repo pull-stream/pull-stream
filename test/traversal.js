@@ -72,7 +72,6 @@ test('leafFirst', function (t) {
   //you have seen the dir already
   ls_r(start, pull.leafFirst)
     .pipe(pull.through(function (file) {
-      if(!file) return
       var dir = path.dirname(file)
       t.ok(!seen[dir])
       expected[dir] = true
