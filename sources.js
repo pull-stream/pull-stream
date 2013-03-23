@@ -9,10 +9,12 @@ var readArray = exports.readArray = function (array) {
   }
 }
 
-var count = function () {
-  var i = 0
+var count = function (max) {
+  var i = 0; max = max || Infinity
   return function (end, cb) {
     if(end) return cb && cb(end)
+    if(max <= i)
+      return cb(true)
     cb(null, i++)
   }
 }
@@ -48,8 +50,7 @@ var defer = exports.defer = function () {
   }
   return read
 }
-
-var PushBuffer = exports.PushBuffer = function () {
+var pushable = exports.pushable = function () {
   var buffer = [], cbs = [], waiting = [], ended
 
   function drain() {
@@ -126,7 +127,9 @@ function (start, createStream) {
   }
 }
 
-
+//this came out different to the first (strm)
+//attempt at leafFirst, but it's still a valid
+//topological sort.
 var leafFirst = exports.leafFirst = 
 function (start, createStream) {
   var reads = []
