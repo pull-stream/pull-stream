@@ -21,3 +21,27 @@ to do it.
 
 Eager means to do something early, so you have it ready
 immediately when you need it.
+
+## Source
+
+The first stream in the pipeline. The Source is not writable.
+
+## Sink
+
+The last Stream in the pipeline. The Sink is not readable.
+
+## Push vs Pull
+
+A pull-stream is a stream where the movement of data
+is initiated by the sink, and a push-stream
+is a stream where the movement of data is initiated
+by the source.
+
+## Reader vs Writable
+
+In push streams, destination streams (Through and Sink),
+are _writable_. They are written to by the source streams.
+
+In pull streams, destination streams _read_ from the source
+streams. They are the active participant, so they are called
+_readers_ rather than _writables_.
