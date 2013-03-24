@@ -2,8 +2,10 @@ var k = 0
 var map = exports.map = 
 function (read, map) {
   var _k = k++
-  if('string' == typeof map)
-    function (data) { return data[key] }
+  if('string' == typeof map) {
+    var key = map
+    map = function (data) { return data[key] }
+  }
   map = map || function (e) {return e}
   return function (end, cb) {
     read(end, function (end, data) {
@@ -54,7 +56,6 @@ function (read, test) {
     }
     return read(null, function (end, data) {
       if(ended) return
-      console.log('take?', end, !test(data))
       if(end) return cb(ended = end)
       //TODO, CHECK THAT END LOGIC IS CORRECT WITH TAKE!!!
       if(!test(data)) {
