@@ -12,7 +12,6 @@ var collect = exports.collect = exports.writeArray =
 function (read, cb) {
   return reduce(read, function (arr, item) {
     arr.push(item)
-    console.log(arr, item)
     return arr
   }, [], cb)
 }
