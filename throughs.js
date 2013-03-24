@@ -51,7 +51,7 @@ function (read, test) {
   }
   return function (end, cb) {
     if(end) {
-      if(!ended) return ended = end, readable(end, cb)
+      if(!ended) return ended = end, read(end, cb)
       cb(ended)
     }
     return read(null, function (end, data) {
