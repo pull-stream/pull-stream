@@ -4,17 +4,18 @@ var sinks    = require('./sinks')
 var throughs = require('./throughs')
  
 for(var k in sources)
-  exports[k] = pipeableSource(sources[k])
+  exports[k] = Source(sources[k])
 
 for(var k in throughs)
-  exports[k] = pipeable(throughs[k])
+  exports[k] = Duplex(throughs[k])
 
 for(var k in sinks)
-  exports[k] = pipeableSink(sinks[k])
+  exports[k] = Sink(sinks[k])
 
-exports.pipeableSource = pipeableSource
-exports.pipeable       = pipeable
-exports.pipeableSink = pipeableSink
+exports.Duplex  = 
+exports.Through = exports.pipeable       = Through
+exports.Source  = exports.pipeableSource = Source
+exports.Sink    = exports.pipeableSink   = Sink
 
 function addPipe(read) {
   if('function' !== typeof read)
@@ -29,14 +30,14 @@ function addPipe(read) {
   return read
 }
 
-function pipeableSource (createRead) {
+function Source (createRead) {
   return function () {
     var args = [].slice.call(arguments)
     return addPipe(createRead.apply(null, args))
   }
 }
 
-function pipeable (createRead) {
+function Through (createRead) {
   return function () {
     var args = [].slice.call(arguments)
     var piped = []
@@ -56,7 +57,7 @@ function pipeable (createRead) {
   }
 }
 
-function pipeableSink(createReader) {
+function Sink(createReader) {
   return function () {
     var args = [].slice.call(arguments)
     return function (read) {
