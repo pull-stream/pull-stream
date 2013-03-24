@@ -1,13 +1,23 @@
 
-var readArray = exports.readArray = function (array) {
+var keys = exports.keys =
+function (object) {
+  return values(Object.keys(object))
+}
+
+var values = exports.values = exports.readArray =
+function (array) {
+  if(!Array.isArray(array))
+    array = Object.keys(array).map(function (k) {
+      return array[k]
+    })
   var i = 0
   return function (end, cb) {
     if(end)
-      return cb && cb(end)
-  
+      return cb && cb(end)  
     cb(i >= array.length || null, array[i++])
   }
 }
+
 
 var count = function (max) {
   var i = 0; max = max || Infinity
@@ -27,6 +37,7 @@ function (generate) {
     return cb(null, generate())
   }
 }
+
 var defer = exports.defer = function () {
   var _read, _cb, _end
 
@@ -50,40 +61,6 @@ var defer = exports.defer = function () {
     })
   }
   return read
-}
-var pushable = exports.pushable = function () {
-  var buffer = [], cbs = [], waiting = [], ended
-
-  function drain() {
-    while(waiting.length && (buffer.length || ended)) {
-      var data = buffer.shift()
-      var cb   = cbs.shift()
-
-      waiting.shift()(ended, data)
-      cb && cb(ended)
-    }
-  }
-
-  function read (end, cb) {
-    ended = ended || end
-    waiting.push(cb)
-    drain()
-  }
-
-  read.push = function (data, cb) {
-    buffer.push(data); cbs.push(cb)
-    drain()
-  }
-
-  read.end = function (end, cb) {
-    if('function' === typeof end)
-      cb = end, end = true
-    ended = ended || end || true; cbs.push(cb)
-    drain()
-  }
-
-  return read
-
 }
 
 var depthFirst = exports.depthFirst =
