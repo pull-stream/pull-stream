@@ -2,9 +2,9 @@
 var pull = require('../')
 var test = require('tape')
 
-test('push-buffer', function (t) {
+test('pushable', function (t) {
 
-  var buf = pull.PushBuffer()
+  var buf = pull.pushable()
 
   //should be a read function!
 
