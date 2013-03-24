@@ -2,10 +2,13 @@ var k = 0
 var map = exports.map = 
 function (read, map) {
   var _k = k++
+  if('string' == typeof map)
+    function (data) { return data[key] }
   map = map || function (e) {return e}
   return function (end, cb) {
     read(end, function (end, data) {
-      cb(end, !end ? map(data) : null)
+      var data = !end ? map(data) : null
+      cb(end, data)
     })
   }
 }
@@ -16,7 +19,7 @@ function (read, test) {
   if('object' === typeof test
     && 'function' === typeof test.test)
     test = test.test.bind(test)
-
+  test = test || function (data) {return !!data}
   return function next (end, cb) {
     read(end, function (end, data) {
       if(!end && !test(data))
@@ -50,7 +53,17 @@ function (read, test) {
       cb(ended)
     }
     return read(null, function (end, data) {
-      if(end || !test(data)) return read(end || true, cb)
+      if(ended) return
+      console.log('take?', end, !test(data))
+      if(end) return cb(ended = end)
+      //TODO, CHECK THAT END LOGIC IS CORRECT WITH TAKE!!!
+      if(!test(data)) {
+        ended = true
+        nextTick(function () {
+          read(true, function (){})
+        })
+        return cb(true)
+      }
       return cb(null, data)
     })
   }
