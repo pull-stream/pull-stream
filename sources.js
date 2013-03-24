@@ -41,6 +41,7 @@ var defer = exports.defer = function () {
   read.resolve = function (read) {
     if(_read) throw new Error('already resolved')
     _read = read
+    if(!_read) throw new Error('no read cannot resolve!' + _read)
     if(_cb) _read(_end, _cb)
   }
   read.abort = function(err) {
