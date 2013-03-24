@@ -1,12 +1,22 @@
-var writeArray = exports.writeArray = function (read, cb) {
-  var array = []
+
+var reduce = exports.reduce = 
+function (read, reduce, acc, cb) {
   read(null, function next (end, data) {
-    if(end)
-      return cb(end === true ? null : end, array)
-    array.push(data)
+    if(end) return cb(end === true ? null : end, acc)
+    acc = reduce(acc, data)
     read(null, next)
   })
 }
+
+var collect = exports.collect = exports.writeArray =
+function (read, cb) {
+  return reduce(read, function (arr, item) {
+    arr.push(item)
+    console.log(arr, item)
+    return arr
+  }, [], cb)
+}
+
 
 var onEnd = exports.onEnd = function (read, done) {
  return read(null, function next (err, data) {
@@ -26,3 +36,4 @@ var drain = exports.drain = function (read, op, done) {
 var log = exports.log = function (read, done) {
   return drain(read, console.log.bind(console), done)
 }
+
