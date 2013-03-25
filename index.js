@@ -7,7 +7,7 @@ for(var k in sources)
   exports[k] = Source(sources[k])
 
 for(var k in throughs)
-  exports[k] = Duplex(throughs[k])
+  exports[k] = Through(throughs[k])
 
 for(var k in sinks)
   exports[k] = Sink(sinks[k])
