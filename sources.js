@@ -39,21 +39,21 @@ function (generate) {
 }
 
 var defer = exports.defer = function () {
-  var _read, _cb, _end
+  var _read, cbs = [], _end
 
   var read = function (end, cb) {
-    if(_cb && !_read) throw new Error(
-      'do not read twice' +
-      'without waiting for callback'
-    )
-    if(_read) return _read(end, cb)
-    _end = end, _cb = cb
+    if(!_read) {
+      _end = end
+      cbs.push(cb)
+    } 
+    else _read(end, cb)
   }
   read.resolve = function (read) {
     if(_read) throw new Error('already resolved')
     _read = read
     if(!_read) throw new Error('no read cannot resolve!' + _read)
-    if(_cb) _read(_end, _cb)
+    while(cbs.length)
+      _read(_end, cbs.shift())
   }
   read.abort = function(err) {
     read.resolve(function (_, cb) {
