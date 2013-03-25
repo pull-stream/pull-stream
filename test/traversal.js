@@ -14,7 +14,7 @@ function ls_r (start, type) {
         return def.abort(err.code === 'ENOTDIR' ? true : err)
 
       def.resolve(
-        pull.readArray(ls || [])
+        pull.values(ls || [])
         .pipe(pull.map(function (file) {
           return path.resolve(dir, file)
         }))
@@ -23,11 +23,6 @@ function ls_r (start, type) {
 
     return def
   })
-  //.pipe(pull.filter(function (e) {return !/\/\./.test(e)} ))
-  /*.pipe(pull.map(function (d) {
-    return path.relative(start, d)
-  }))*/
-
 }
 
 test('widthFirst', function (t) {
@@ -67,7 +62,7 @@ test('depthFirst', function (t) {
 test('leafFirst', function (t) {
   var seen = {}
   var expected = {}
-//  expected[start] = true
+  //  expected[start] = true
   //assert that for each item,
   //you have seen the dir already
   ls_r(start, pull.leafFirst)
@@ -87,7 +82,4 @@ test('leafFirst', function (t) {
 
 })
 
-
-//ls_r(start, pull.leafFirst)
-  //.pipe(pull.log())
 
