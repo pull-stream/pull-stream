@@ -24,3 +24,21 @@ require('tape')('group', function (t) {
     t.end()
   }))
 })
+
+require('tape')('flatten (ungroup)', function (t) {
+  pull.count()
+  .pipe(pull.take(20))
+  .pipe(pull.group(7))
+  .pipe(pull.group(3))
+  .pipe(pull.through(console.log))
+  .pipe(pull.flatten())
+  .pipe(pull.through(console.log))
+  .pipe(pull.flatten())
+  .pipe(pull.collect(function (err, ary) {
+    console.log(ary)
+    t.deepEqual(ary, [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
+    t.end()
+  }))
+
+})
+
