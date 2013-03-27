@@ -19,7 +19,8 @@ function (array) {
 }
 
 
-var count = function (max) {
+var count = exports.count = 
+function (max) {
   var i = 0; max = max || Infinity
   return function (end, cb) {
     if(end) return cb && cb(end)
