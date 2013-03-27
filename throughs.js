@@ -134,6 +134,25 @@ function (read, size) {
   }
 }
 
+var flatten = exports.flatten = function (read) {
+  var chunk
+  return function (end, cb) {
+    //this means that the upstream is sending an error.
+    if(end) return read(ended = end, cb)
+
+    if(chunk && chunk.length)
+      return cb(null, chunk.shift())
+
+    read(null, function (err, data) {
+      if(err) return cb(err)
+      chunk = data
+      
+      if(chunk && chunk.length)
+        return cb(null, chunk.shift())
+    })
+  }
+}
+
 var nextTick = process.nextTick
 
 var highWaterMark = exports.highWaterMark = 
