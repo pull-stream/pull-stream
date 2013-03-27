@@ -62,12 +62,16 @@ The inverse of `unique`
 
 read from the source stream until `test` fails.
 
-## group (len)
+## group (length)
 
-chunk incoming data into arrays of max length `len`,
-(the last item may be shorter than len)
+Group incoming data into arrays of max length `length`,
+(the last item may be shorter than `length`)
 
-Useful for items you can handle in batches.
+Useful for data you can handle in batches.
+
+## flatten ()
+
+Turn a stream of arrays into a stream of their items, (undoes group).
 
 ## highWaterMark (n)
 
