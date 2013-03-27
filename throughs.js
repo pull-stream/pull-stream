@@ -23,6 +23,18 @@ function (read, map) {
   }
 }
 
+var asyncMap = exports.asyncMap =
+function (read, map) {
+  if(!map) return read
+  return function (end, cb) {
+    if(end) return read(end, cb) //abort
+    read(null, function (end, data) {
+      if(end) return cb(end, data)
+      map(data, cb)
+    })
+  }
+}
+
 var filter = exports.filter =
 function (read, test) {
   //regexp
