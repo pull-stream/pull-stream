@@ -12,10 +12,13 @@ source()
   .pipe(sink())
 ```
 
-## readArray (array)
+## values (array | object)
 
-create a SourceStream that from an array and then stops.
+create a SourceStream that reads the values from an array or object and then stops.
 
+## keys (array | object)
+
+stream the key names from an object (or array)
 
 ## count (max)
 

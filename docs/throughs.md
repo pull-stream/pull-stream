@@ -57,6 +57,13 @@ The inverse of `unique`
 
 read from the source stream until `test` fails.
 
+## group (len)
+
+chunk incoming data into arrays of max length `len`,
+(the last item may be shorter than len)
+
+Useful for items you can handle in batches.
+
 ## highWaterMark (n)
 
 A async buffering stream.
