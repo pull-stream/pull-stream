@@ -42,6 +42,17 @@ like `[].filter(function (data) {return true || false})`
 only `data` where `test(data) == true` are let through
 to the next stream.
 
+## unique (prop)
+
+Filter items that have a repeated value for `prop()`,
+by default, `prop = function (it) {return it }`, if prop is a string,
+it will filter nodes which have repeated values for that property.
+
+## nonUnique (prop)
+
+filter unique items -- get the duplicates.
+The inverse of `unique`
+
 ## take (test)
 
 read from the source stream until `test` fails.
