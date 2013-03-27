@@ -19,7 +19,7 @@ function (read, cb) {
 
 var onEnd = exports.onEnd = function (read, done) {
  return read(null, function next (err, data) {
-    if(err) return done(err)
+    if(err) return done(err === true ? null : err)
     read(null, next)
   })
 }
