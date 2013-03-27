@@ -1,12 +1,20 @@
+function prop (map) {  
+  if('string' == typeof map) {
+    var key = map
+    return function (data) { return data[key] }
+  }
+  return map
+}
+
+function id (item) {
+  return item
+}
+
 var k = 0
 var map = exports.map = 
 function (read, map) {
   var _k = k++
-  if('string' == typeof map) {
-    var key = map
-    map = function (data) { return data[key] }
-  }
-  map = map || function (e) {return e}
+  map = prop(map) || id
   return function (end, cb) {
     read(end, function (end, data) {
       var data = !end ? map(data) : null
@@ -21,7 +29,7 @@ function (read, test) {
   if('object' === typeof test
     && 'function' === typeof test.test)
     test = test.test.bind(test)
-  test = test || function (data) {return !!data}
+  test = prop(test) || id
   return function next (end, cb) {
     read(end, function (end, data) {
       if(!end && !test(data))
@@ -68,6 +76,21 @@ function (read, test) {
       return cb(null, data)
     })
   }
+}
+
+var unique = exports.unique = function (read, field, invert) {
+  field = prop(field) || id
+  var seen = {}
+  return filter(read, function (data) {
+    var key = field(data)
+    if(seen[key]) return !!invert //false, by default
+    else seen[key] = true
+    return !invert //true by default
+  })
+}
+
+var nonUnique = exports.nonUnique = function (read, field) {
+  return unique(read, field, true)
 }
 
 var nextTick = process.nextTick
