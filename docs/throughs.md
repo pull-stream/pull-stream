@@ -36,6 +36,11 @@ source().pipe(throughABC()).pipe(sink())
 
 like `[].map(function (data) {return data})`
 
+## asyncMap (fun)
+
+like `map` but the signature of `fun` must be
+`function (data, cb) { cb(null, data) }`
+
 ## filter (test)
 
 like `[].filter(function (data) {return true || false})`
