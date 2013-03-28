@@ -17,6 +17,8 @@ exports.Through = exports.pipeable       = Through
 exports.Source  = exports.pipeableSource = Source
 exports.Sink    = exports.pipeableSink   = Sink
 
+export.addPipe = addPipe
+
 function addPipe(read) {
   if('function' !== typeof read)
     return read
