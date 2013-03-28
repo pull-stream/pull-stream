@@ -17,7 +17,9 @@ exports.Through = exports.pipeable       = Through
 exports.Source  = exports.pipeableSource = Source
 exports.Sink    = exports.pipeableSink   = Sink
 
-export.addPipe = addPipe
+exports.addPipe = addPipe
+exports.addReaderPipe
+                = addReaderPipe
 
 function addPipe(read) {
   if('function' !== typeof read)
@@ -37,6 +39,22 @@ function Source (createRead) {
     var args = [].slice.call(arguments)
     return addPipe(createRead.apply(null, args))
   }
+}
+
+function addReaderPipe(reader) {
+    var piped = []
+    function _reader (read) {
+      read = reader(read)
+      while(piped.length)
+        read = piped.shift()(read)
+      return read
+      //pipeing to from this reader should compose...
+    }
+    _reader.pipe = function (read) {
+      piped.push(read)
+      return reader
+    }
+    return _reader
 }
 
 function Through (createRead) {
