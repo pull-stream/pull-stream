@@ -52,10 +52,18 @@ function (read, test) {
 }
 
 var through = exports.through = 
-function (read, op) {
+function (read, op, onEnd) {
+  var a = false
+  function once (abort) {
+    if(a || !onEnd) return
+    a = true
+    onEnd(abort === true ? null : abort)
+  }
+
   return function (end, cb) {
     return read(end, function (end, data) {
       if(!end) op && op(data)
+      else once(end)
       cb(end, data)
     })
   }
@@ -187,4 +195,6 @@ function (read, highWaterMark) {
     next(); readAhead()
   }
 }
+
+
 
