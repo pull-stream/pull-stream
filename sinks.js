@@ -26,7 +26,7 @@ var onEnd = exports.onEnd = function (read, done) {
 
 var drain = exports.drain = function (read, op, done) {
   return read(null, function next (err, data) {
-    if(err) return done && done(err)
+    if(err) return done && done(err === true ? null : err)
     op && op(data)
     read(null, next)
   })
