@@ -74,26 +74,22 @@ function (read, test) {
   var ended = false
   if('number' === typeof test) {
     var n = test; test = function () {
-      return n-- > 0
+      return n --> 0
     }
   }
   return function (end, cb) {
-    if(end) {
-      if(!ended) return ended = end, read(end, cb)
-      cb(ended)
-    }
-    return read(null, function (end, data) {
-      if(ended) return
-      if(end) return cb(ended = end)
+    if(ended = ended || end)
+      return read(ended, cb)
+
+    read(null, function (end, data) {
+      if(ended = ended || end) return cb(ended)
       //TODO, CHECK THAT END LOGIC IS CORRECT WITH TAKE!!!
       if(!test(data)) {
         ended = true
-        nextTick(function () {
-          read(true, function (){})
-        })
-        return cb(true)
+        read(true, cb)
       }
-      return cb(null, data)
+      else 
+        cb(null, data)
     })
   }
 }
