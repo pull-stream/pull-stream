@@ -10,10 +10,8 @@ function id (item) {
   return item
 }
 
-var k = 0
 var map = exports.map = 
 function (read, map) {
-  var _k = k++
   map = prop(map) || id
   return function (end, cb) {
     read(end, function (end, data) {
@@ -71,24 +69,26 @@ function (read, op, onEnd) {
 
 var take = exports.take =
 function (read, test) {
-  var ended = false
+  var ended = false, more
   if('number' === typeof test) {
     var n = test; test = function () {
-      return n --> 0
+      return n --
     }
   }
   return function (end, cb) {
-    if(ended = ended || end)
-      return read(ended, cb)
+    if(ended) return cb(ended)
+    if(1 === more) end = true
+    if(ended = end) return read(ended, cb)
 
     read(null, function (end, data) {
       if(ended = ended || end) return cb(ended)
-      //TODO, CHECK THAT END LOGIC IS CORRECT WITH TAKE!!!
-      if(!test(data)) {
+      if(!(more = test(data))) {
         ended = true
-        read(true, cb)
+        read(true, function (end, data) {
+          cb(ended, data)
+        })
       }
-      else 
+      else
         cb(null, data)
     })
   }
