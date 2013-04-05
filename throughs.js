@@ -59,6 +59,7 @@ function (read, op, onEnd) {
   }
 
   return function (end, cb) {
+    if(end) once(end)
     return read(end, function (end, data) {
       if(!end) op && op(data)
       else once(end)
