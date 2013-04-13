@@ -1,10 +1,32 @@
+var drain = exports.drain = function (read, op, done) {
+  ;(function next() {
+    var sync = true, returned = false, loop = true
+    do {
+      returned = false; sync = true
+      read(null, function (err, data) {
+        returned = true
+        
+        if(err) {
+          done && done(err === true ? null : err)
+          return loop = false
+        }
+
+        op && op(data)
+
+        if(!sync) next()
+      })
+      sync = false
+      if(!returned) return
+    } while (loop);
+  })()
+}
 
 var reduce = exports.reduce = 
 function (read, reduce, acc, cb) {
-  read(null, function next (end, data) {
-    if(end) return cb(end === true ? null : end, acc)
+  drain(read, function (data) {
     acc = reduce(acc, data)
-    read(null, next)
+  }, function (err) {
+    cb(err, acc)
   })
 }
 
@@ -16,20 +38,11 @@ function (read, cb) {
   }, [], cb)
 }
 
+//if the source callsback sync, then loop
+//rather than recurse
 
 var onEnd = exports.onEnd = function (read, done) {
- return read(null, function next (err, data) {
-    if(err) return done(err === true ? null : err)
-    read(null, next)
-  })
-}
-
-var drain = exports.drain = function (read, op, done) {
-  return read(null, function next (err, data) {
-    if(err) return done && done(err === true ? null : err)
-    op && op(data)
-    read(null, next)
-  })
+  return drain(read, null, done)
 }
 
 var log = exports.log = function (read, done) {
