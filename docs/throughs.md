@@ -47,6 +47,11 @@ like `[].filter(function (data) {return true || false})`
 only `data` where `test(data) == true` are let through
 to the next stream.
 
+
+## filterNot (test)
+
+like filter, but remove items where the filter returns true.
+
 ## unique (prop)
 
 Filter items that have a repeated value for `prop()`,
