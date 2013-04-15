@@ -43,4 +43,16 @@ test('find missing', function (t) {
 })
 
 
+test('there can only be one', function (t) {
+test('find 7', function (t) {
+  pull.values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  .pipe(pull.find(function (d) {
+    return d >= 7
+  }, function (err, seven) {
+    t.equal(seven, 7)
+    t.notOk(err)
+    t.end()
+  }))
+})
 
+})
