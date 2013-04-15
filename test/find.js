@@ -44,8 +44,13 @@ test('find missing', function (t) {
 
 
 test('there can only be one', function (t) {
-test('find 7', function (t) {
+
   pull.values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  .pipe(pull.asyncMap(function (e, cb) {
+    process.nextTick(function () {
+      cb(null, e)
+    })
+  }))
   .pipe(pull.find(function (d) {
     return d >= 7
   }, function (err, seven) {
@@ -53,6 +58,5 @@ test('find 7', function (t) {
     t.notOk(err)
     t.end()
   }))
-})
 
 })
