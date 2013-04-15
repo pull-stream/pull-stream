@@ -39,6 +39,14 @@ function (read, test) {
   }
 }
 
+var filterNot = exports.filterNot =
+function (read, test) {
+  test = tester(test)
+  return filter(read, function (e) {
+    return !test(e)
+  })
+}
+
 var through = exports.through = 
 function (read, op, onEnd) {
   var a = false
