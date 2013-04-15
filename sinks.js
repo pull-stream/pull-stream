@@ -33,6 +33,10 @@ var drain = exports.drain = function (read, op, done) {
 var find = 
 exports.find = function (read, test, cb) {
   var ended = false
+  if(!cb)
+    cb = test, test = id
+  else
+    test = prop(test) || id
   drain(read, function (data) {
     if(test(data)) {
       ended = true
