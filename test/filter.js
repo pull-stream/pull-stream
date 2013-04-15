@@ -37,3 +37,21 @@ test('filter with regexp', function (t) {
       t.end()
     }))
 })
+
+test('inverse filter with regexp', function (t) {
+  pull.infinite()
+    .pipe(pull.map(function (d) {
+      return Math.round(d * 1000).toString(16)
+    }))
+    .pipe(pull.filterNot(/^[^e]+$/i)) //no E
+    .pipe(pull.take(37))
+    .pipe(pull.writeArray(function (err, array) {
+      t.equal(array.length, 37)
+      console.log(array)
+      array.forEach(function (d) {
+        t.notEqual(d.indexOf('e'), -1)
+      })
+      t.end()
+    }))
+})
+
