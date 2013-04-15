@@ -11,14 +11,34 @@ var drain = exports.drain = function (read, op, done) {
           return loop = false
         }
 
-        op && op(data)
-
+        if(op) {
+          //return false to abort!
+          if(false === op(data)) {
+            loop = false
+            read(true, done || function () {})
+          }
+        }
         if(!sync) next()
       })
       sync = false
       if(!returned) return
     } while (loop);
   })()
+}
+
+var find = 
+exports.find = function (read, test, cb) {
+  var ended = false
+  drain(read, function (data) {
+    if(test(data)) {
+      ended = true
+      cb(null, data)
+    return false
+    }
+  }, function (err) {
+    if(ended) return //already called back
+    cb(err === true ? null : err, null)
+  })
 }
 
 var reduce = exports.reduce = 
