@@ -15,7 +15,7 @@ var drain = exports.drain = function (read, op, done) {
           //return false to abort!
           if(false === op(data)) {
             loop = false
-            read(true, done || function () {})
+            return read(true, done || function () {})
           }
         }
         if(!sync) next()
