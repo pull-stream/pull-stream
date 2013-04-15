@@ -1,3 +1,7 @@
+var u    = require('./util')
+var prop = u.prop
+var id   = u.id
+
 var drain = exports.drain = function (read, op, done) {
   ;(function next() {
     var sync = true, returned = false, loop = true

@@ -1,14 +1,7 @@
-function prop (map) {  
-  if('string' == typeof map) {
-    var key = map
-    return function (data) { return data[key] }
-  }
-  return map
-}
-
-function id (item) {
-  return item
-}
+var u      = require('./util')
+var prop   = u.prop
+var id     = u.id
+var tester = u.tester
 
 var map = exports.map = 
 function (read, map) {
@@ -36,10 +29,7 @@ function (read, map) {
 var filter = exports.filter =
 function (read, test) {
   //regexp
-  if('object' === typeof test
-    && 'function' === typeof test.test)
-    test = test.test.bind(test)
-  test = prop(test) || id
+  test = tester(test)
   return function next (end, cb) {
     read(end, function (end, data) {
       if(!end && !test(data))
@@ -76,6 +66,9 @@ function (read, test) {
       return n --
     }
   }
+ // else 
+//    test = tester(test)
+
   return function (end, cb) {
     if(ended) return cb(ended)
     if(1 === more) end = true
