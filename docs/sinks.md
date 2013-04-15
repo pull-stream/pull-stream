@@ -13,17 +13,23 @@ source()
   .pipe(sink())
 ```
 
-## writeArray(cb)
+## drain (op?, done?)
+
+Drain the stream, calling `op` on each `data`.
+call `done` when stream is finished.
+If op returns `===false`, abort the stream.
+
+## reduce (reduce, initial, cb)
+
+reduce stream into single value, then callback.
+
+## collect(cb)
 
 Read the stream into an array, then callback.
 
 ## onEnd (cb)
 
 Drain the stream and then callback when done.
-
-## drain (op?)
-
-Drain the stream, calling `op` on each `data`.
 
 ## log
 
