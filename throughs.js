@@ -1,4 +1,5 @@
 var u      = require('./util')
+var sources = require('./sources')
 var prop   = u.prop
 var id     = u.id
 var tester = u.tester
@@ -141,7 +142,33 @@ function (read, size) {
 }
 
 var flatten = exports.flatten = function (read) {
-  var chunk
+  var _read
+  return function (abort, cb) {
+    if(_read) nextChunk()
+    else      nextStream()
+
+    function nextChunk () {
+      _read(null, function (end, data) {
+        if(end) nextStream()
+        else    cb(null, data)
+      })
+    }
+    function nextStream () {
+      read(null, function (end, stream) {
+        if(end)
+          return cb(end)
+        if(Array.isArray(stream))
+          stream = sources.values(stream)
+        else if('function' != typeof stream)
+          throw new Error('expected stream of streams')
+        
+        _read = stream
+        nextChunk()
+      })
+    }
+  }
+
+/*  var chunk
   return function (end, cb) {
     //this means that the upstream is sending an error.
     if(end) return read(ended = end, cb)
@@ -156,7 +183,7 @@ var flatten = exports.flatten = function (read) {
       if(chunk && chunk.length)
         return cb(null, chunk.shift())
     })
-  }
+  }*/
 }
 
 var nextTick = process.nextTick
