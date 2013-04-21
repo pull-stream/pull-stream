@@ -64,6 +64,12 @@ var defer = exports.defer = function () {
   return read
 }
 
+var empty = exports.empty = function () {
+  return function (abort, cb) {
+    cb(true)
+  }
+}
+
 var depthFirst = exports.depthFirst =
 function (start, createStream) {
   var reads = []
