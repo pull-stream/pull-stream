@@ -54,7 +54,18 @@ function ls (dir) {
 }
 ```
 
-### pushable
+## empty
+
+A stream with no contents (it just ends immediately)
+
+``` js
+pull.empty().pipe(pull.collect(function (err, ary) {
+  console.log(arg)
+  // ==> []
+})
+```
+
+## pushable
 
 Create a false source stream with a `.push(data, cb?)`
 property. Use when you really need a push api,
@@ -74,7 +85,7 @@ function ls (dir) {
 }
 ```
 
-### depthFirst, widthFirst, leafFirst (start, createStream)
+## depthFirst, widthFirst, leafFirst (start, createStream)
 
 Traverse a tree structure. `start` is a value that represents
 a node. `createStream` is a function that returns
