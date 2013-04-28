@@ -160,6 +160,65 @@ source().pipe(trippleThrough).pipe(sink())
 //and then pipe it later!
 ```
 
+## Design Goals & Rationale
+
+
+There is a deeper,
+[platonic abstraction](http://en.wikipedia.org/wiki/Platonic_idealism),
+where a streams is just an array in time, instead of in space.
+And all the various streaming "abstractions" are just crude implementations
+of this abstract idea.
+
+[classic-streams](https://github.com/joyent/node/blob/v0.8.16/doc/api/stream.markdown),
+[new-streams](https://github.com/joyent/node/blob/v0.10/doc/api/stream.markdown),
+[reducers](https://github.com/Gozala/reducers)
+
+The objective here is to find a simple realization of the best features of the above.
+
+### Type Agnostic
+
+A stream abstraction should be able to handle both streams of text and streams
+of objects.
+
+### A pipeline is also a stream.
+
+This should work: `a.pipe(x.pipe(y).pipe(z)).pipe(b)`
+this makes it possible to write a custom stream simply by
+combining a few available streams.
+
+### Propagate End/Error conditions.
+ 
+If a stream ends in an unexpected way (error),
+then other streams in the pipeline should be notified.
+(this is a problem in node streams - when an error occurs,
+the stream is disconnected, and the user must handle that specially)
+
+Also, the stream should be able to be ended from either end.
+
+### Transparent Backpressure & Lazyness
+
+Very simple transform streams must be able to transfer back pressure
+instantly.
+
+This is a problem in node streams, pause is only transfered on write, so
+on a long chain (`a.pipe(b).pipe(c)`), if `c` pauses, `b` will have to write to it
+to pause, and then `a` will have to write to `b` to pause.
+If `b` only transforms 'a`s output, then `a` will have to write to `b` twice to
+find out that `c` is paused.
+
+[reducers](https://github.com/Gozala/reducers) reducers has an interesting method,
+where synchronous tranformations propagate back pressure instantly!
+
+This means you can have two "smart" streams doing io at the ends, and lots of dumb 
+streams in the middle, and back pressure will work perfectly, as if the dump streams
+and not there.
+
+This makes lazyness work right.
+
+### 
+
+
+
 ## License
 
 MIT
