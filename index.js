@@ -87,23 +87,3 @@ function Sink(createReader) {
   }
 }
 
-/*
-var destack = function (n) {
-  var i = 0; n = n || 10, waiting = [], queued = false, ended = false
-  return function (readable) {
-    return function (reader) {
-      return reader(function (end, cb) {
-        ended = ended || end
-        if(i ++ < n) {
-          return readable(end, cb)
-        } else {
-          process.nextTick(function () {
-             i = 0
-             readable(end, cb)
-          })
-        }
-      })
-    }
-  }
-}
-*/
