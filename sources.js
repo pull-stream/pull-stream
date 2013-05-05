@@ -4,6 +4,18 @@ function (object) {
   return values(Object.keys(object))
 }
 
+var once = exports.once =
+function (value) {
+  return function (abort, cb) {
+    if(abort) return cb(abort)
+    if(value != null) {
+      var _value = value; value = null
+      cb(null, _value)
+    } else
+      cb(true)
+  }
+}
+
 var values = exports.values = exports.readArray =
 function (array) {
   if(!Array.isArray(array))
@@ -74,7 +86,8 @@ var depthFirst = exports.depthFirst =
 function (start, createStream) {
   var reads = []
 
-  reads.unshift(createStream(start))
+  reads.unshift(once(start))
+//  reads.unshift(createStream(start))
 
   return function next (end, cb) {
     if(!reads.length)
@@ -96,7 +109,7 @@ var widthFirst = exports.widthFirst =
 function (start, createStream) {
   var reads = []
 
-  reads.push(createStream(start))
+  reads.push(once(start))
 
   return function next (end, cb) {
     if(!reads.length)
@@ -119,7 +132,7 @@ var leafFirst = exports.leafFirst =
 function (start, createStream) {
   var reads = []
   var output = []
-  reads.push(createStream(start))
+  reads.push(once(start))
   
   return function next (end, cb) {
     reads[0](end, function (end, data) {
