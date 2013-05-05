@@ -27,6 +27,53 @@ function (read, map) {
   }
 }
 
+var paraMap = exports.paraMap =
+function (read, map, width) {
+  if(!map) return read
+  var ended = false, queue = [], _cb
+
+  function drain () {
+    if(!_cb) return
+    var cb = _cb
+    _cb = null
+    if(queue.length)
+      return cb(null, queue.shift())
+    else if(ended && !n)
+      return cb(ended)
+    _cb = cb
+  }
+
+  function pull () {
+    read(null, function (end, data) {
+      if(end) {
+        ended = end
+        return drain()
+      }
+      n++
+      map(data, function (err, data) {
+        n--
+
+        queue.push(data)
+        drain()
+      })
+
+      if(n < width && !ended)
+        pull()
+    })
+  }
+
+  var n = 0
+  return function (end, cb) {
+    if(end) return read(end, cb) //abort
+    //continue to read while there are less than 3 maps in flight
+    _cb = cb
+    if(queue.length || ended)
+      pull(), drain()
+    else pull()
+  }
+  return highWaterMark(asyncMap(read, map), width)
+}
+
 var filter = exports.filter =
 function (read, test) {
   //regexp
@@ -75,8 +122,6 @@ function (read, test) {
       return n --
     }
   }
- // else 
-//    test = tester(test)
 
   return function (end, cb) {
     if(ended) return cb(ended)
@@ -167,23 +212,24 @@ var flatten = exports.flatten = function (read) {
       })
     }
   }
+}
 
-/*  var chunk
-  return function (end, cb) {
-    //this means that the upstream is sending an error.
-    if(end) return read(ended = end, cb)
+var prepend =
+exports.prepend =
+function (read, head) {
 
-    if(chunk && chunk.length)
-      return cb(null, chunk.shift())
+  return function (abort, cb) {
+    if(head !== null) {
+      if(abort)
+        return read(abort, cb)
+      var _head = head
+      head = null
+      cb(null, _head)
+    } else {
+      read(abort, cb)
+    }
+  }
 
-    read(null, function (err, data) {
-      if(err) return cb(err)
-      chunk = data
-      
-      if(chunk && chunk.length)
-        return cb(null, chunk.shift())
-    })
-  }*/
 }
 
 var nextTick = process.nextTick
