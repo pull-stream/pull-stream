@@ -42,19 +42,19 @@ function Source (createRead) {
 }
 
 function addReaderPipe(reader) {
-    var piped = []
-    function _reader (read) {
-      read = reader(read)
-      while(piped.length)
-        read = piped.shift()(read)
-      return read
-      //pipeing to from this reader should compose...
-    }
-    _reader.pipe = function (read) {
-      piped.push(read)
-      return reader
-    }
-    return _reader
+  var piped = []
+  function _reader (read) {
+    read = reader(read)
+    while(piped.length)
+      read = piped.shift()(read)
+    return read
+    //pipeing to from this reader should compose...
+  }
+  _reader.pipe = function (read) {
+    piped.push(read)
+    return reader
+  }
+  return _reader
 }
 
 function Through (createRead) {
