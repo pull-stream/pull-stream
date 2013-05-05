@@ -26,9 +26,11 @@ function ls_r (start, type) {
 }
 
 test('widthFirst', function (t) {
-  var max = 0
+  var max = 0, didStart
+
   ls_r(start, pull.widthFirst)
     .pipe(pull.map(function (file) {
+      if(file === start) didStart = true
       return file.split('/').length
     }))
     .pipe(pull.filter(function (d) {
@@ -37,20 +39,23 @@ test('widthFirst', function (t) {
         return max = d, true
     }))
     .pipe(pull.through(console.log))
-    .pipe(pull.onEnd(function () {
-       t.end()
+    .pipe(pull.drain(null, function () {
+      t.ok(didStart)
+      t.end()
     }))
 })
 
 test('depthFirst', function (t) {
   var seen = {}
-  seen[start] = true
   //assert that for each item,
   //you have seen the dir already
   ls_r(start, pull.depthFirst)
     .pipe(pull.through(function (file) {
-      var dir = path.dirname(file)
-      t.ok(seen[dir])
+      if(file != start) {
+        var dir = path.dirname(file)
+        t.ok(seen[dir])
+      }
+      //console.log(dir)
       seen[file] = true
     }))
     .pipe(pull.onEnd(function () {
@@ -62,19 +67,20 @@ test('depthFirst', function (t) {
 test('leafFirst', function (t) {
   var seen = {}
   var expected = {}
-  //  expected[start] = true
+    expected[start] = true
   //assert that for each item,
   //you have seen the dir already
   ls_r(start, pull.leafFirst)
     .pipe(pull.through(function (file) {
-      var dir = path.dirname(file)
-      t.ok(!seen[dir])
-      expected[dir] = true
+      if(file !== start) {
+        var dir = path.dirname(file)
+        t.ok(!seen[dir])
+        expected[dir] = true
+      }
       if(expected[file])
         delete expected[file]
     }))
-    .pipe(pull.onEnd(function () {
-      delete expected[start]
+    .pipe(pull.drain(null, function () {
       for(var k in expected)
         t.ok(false, k)
       t.end()
