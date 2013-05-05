@@ -1,13 +1,31 @@
 # pull-stream
 
-Experimental Minimal Pipeable Pull-stream
+Minimal Pipeable Pull-stream
 
 In [classic-streams](https://github.com/joyent/node/blob/v0.8/doc/api/stream.markdown),
 streams _push_ data to the next stream in the pipeline.
 In [new-streams](https://github.com/joyent/node/blob/v0.10/doc/api/stream.markdown),
 data is pulled out of the source stream, into the destination.
 
-`pull-stream` is a minimal take on pull streams.
+`pull-stream` is a minimal take on pull streams,
+optimized for "object" streams, but still supporting text streams.
+
+## Quick Example
+
+stat some files.
+
+``` js
+pull.values(['file1', 'file2', 'file3'])
+.pipe(pull.asyncMap(fs.stat))
+.pipe(pull.collect(function (err, array) {
+  console.log(array)
+})
+```
+
+The best thing about pull-stream is that it can be completely lazy.
+this is perfect for async traversals where you might want to stop early.
+
+stat files recursively
 
 ## Examples
 
