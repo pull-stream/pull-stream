@@ -227,3 +227,7 @@ streams in the middle, and back pressure will work perfectly, as if the dumb str
 are not there.
 
 This makes lazyness work right.
+
+## License
+
+MIT
