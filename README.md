@@ -14,7 +14,7 @@ optimized for "object" streams, but still supporting text streams.
 
 Stat some files:
 
-``` js
+```js
 pull.values(['file1', 'file2', 'file3'])
 .pipe(pull.asyncMap(fs.stat))
 .pipe(pull.collect(function (err, array) {
@@ -33,7 +33,7 @@ What if implementing a stream was this simple:
 
 `pull.{Source,Through,Sink}` just wrap a function and give it a `.pipe(dest)`!
 
-``` js
+```js
 var pull = require('pull-stream')
 
 var createSourceStream = pull.Source(function () {
@@ -84,7 +84,7 @@ All [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/source
 and [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
 are readable streams.
 
-``` js
+```js
 var i = 100
 var randomReadable = pull.Source(function () {
   return function (end, cb) {
@@ -105,7 +105,7 @@ All [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throu
 and [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
 are reader streams.
 
-``` js
+```js
 var logger = pull.Sink(function (read) {
   read(null, function next(end, data) {
     if(end === true) return
@@ -119,13 +119,13 @@ var logger = pull.Sink(function (read) {
 
 These can be connected together by passing the `readable` to the `reader`
 
-``` js
+```js
 logger()(randomReadable())
 ```
 
 Or, if you prefer to read things left-to-right
 
-``` js
+```js
 randomReadable().pipe(logger())
 ```
 
@@ -136,7 +136,7 @@ A duplex/through stream is both a `reader` that is also `readable`
 A duplex/through stream is just a function that takes a `read` function,
 and returns another `read` function.
 
-``` js
+```js
 var map = pull.Through(function (read, map) {
   //return a readable function!
   return function (end, cb) {
@@ -152,7 +152,7 @@ var map = pull.Through(function (read, map) {
 Every pipeline must go from a `source` to a `sink`.
 Data will not start moving until the whole thing is connected.
 
-``` js
+```js
 source.pipe(through).pipe(sink)
 ```
 
@@ -166,7 +166,7 @@ to add pipeability to your pull-streams.
 
 What if you could do this?
 
-``` js
+```js
 var tripleThrough =
   through1().pipe(through2()).pipe(through3())
 //THE THREE THROUGHS BECOME ONE
@@ -208,7 +208,7 @@ the stream is disconnected, and the user must handle that specially)
 
 Also, the stream should be able to be ended from either end.
 
-### Transparent Backpressure & Lazyness
+### Transparent Backpressure & Laziness
 
 Very simple transform streams must be able to transfer back pressure
 instantly.
@@ -216,7 +216,7 @@ instantly.
 This is a problem in node streams, pause is only transfered on write, so
 on a long chain (`a.pipe(b).pipe(c)`), if `c` pauses, `b` will have to write to it
 to pause, and then `a` will have to write to `b` to pause.
-If `b` only transforms 'a`s output, then `a` will have to write to `b` twice to
+If `b` only transforms `a`'s output, then `a` will have to write to `b` twice to
 find out that `c` is paused.
 
 [reducers](https://github.com/Gozala/reducers) reducers has an interesting method,
@@ -226,7 +226,7 @@ This means you can have two "smart" streams doing io at the ends, and lots of du
 streams in the middle, and back pressure will work perfectly, as if the dumb streams
 are not there.
 
-This makes lazyness work right.
+This makes laziness work right.
 
 ## License
 
