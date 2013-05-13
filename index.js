@@ -31,7 +31,6 @@ function addPipe(read) {
     return addPipe(reader(read))
   }
   read.type = 'Source'
-  console.log(read.type)
   return read
 }
 
