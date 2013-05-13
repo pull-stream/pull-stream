@@ -30,15 +30,18 @@ function addPipe(read) {
       throw new Error('must pipe to reader')
     return addPipe(reader(read))
   }
-
+  read.type = 'Source'
+  console.log(read.type)
   return read
 }
 
 function Source (createRead) {
-  return function () {
+  function s() {
     var args = [].slice.call(arguments)
     return addPipe(createRead.apply(null, args))
   }
+  s.type = 'Source'
+  return s
 }
 
 function addReaderPipe(reader) {
@@ -70,9 +73,13 @@ function Through (createRead) {
       //pipeing to from this reader should compose...
     }
     reader.pipe = function (read) {
-      piped.push(read)
+      piped.push(read) 
+      if(read.type === 'Source')
+        throw new Error('cannot pipe ' + reader.type + ' to Source')
+      reader.type = read.type === 'Sink' ? 'Sink' : 'Through'
       return reader
     }
+    reader.type = 'Through'
     return reader
   }
 }
@@ -80,10 +87,12 @@ function Through (createRead) {
 function Sink(createReader) {
   return function () {
     var args = [].slice.call(arguments)
-    return function (read) {
+    function s (read) {
       args.unshift(read)
       return createReader.apply(null, args)
     }
+    s.type = 'Sink'
+    return s
   }
 }
 
