@@ -87,7 +87,6 @@ function (start, createStream) {
   var reads = []
 
   reads.unshift(once(start))
-//  reads.unshift(createStream(start))
 
   return function next (end, cb) {
     if(!reads.length)

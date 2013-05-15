@@ -1,5 +1,7 @@
 var u      = require('./util')
 var sources = require('./sources')
+var sinks = require('./sinks')
+
 var prop   = u.prop
 var id     = u.id
 var tester = u.tester
@@ -230,6 +232,26 @@ function (read, head) {
     }
   }
 
+}
+
+//var drainIf = exports.drainIf = function (op, done) {
+//  sinks.drain(
+//}
+
+var _reduce = exports._reduce = function (read, reduce, initial) {
+  return function (close, cb) {
+    if(close) return read(close, cb)
+    if(ended) return cb(ended)
+
+    sinks.drain(function (item) {
+      initial = reduce(initial, item)
+    }, function (err, data) {
+      ended = err || true
+      if(!err) cb(null, initial)
+      else     cb(ended)
+    })
+    (read)
+  }
 }
 
 var nextTick = process.nextTick
