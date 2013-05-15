@@ -4,9 +4,9 @@ var pstrm      = require('../')
 
 var sources    = require('../sources')
 var sinks      = require('../sinks')
+var pull       = require('../')
 
 var readArray  = sources.readArray
-var writeArray = sinks.writeArray
 
 var pipeableSource = pstrm.pipeableSource
 var pipeable       = pstrm.pipeable
@@ -73,10 +73,8 @@ tape('pipe', function (t) {
 
 tape('pipe2', function (t) {
   var array = [1, 2, 3]
-  console.log('readArray', readArray)
   var read = pipeableSource(readArray)(array)
-  console.log('reader?', read)
-  arrayWriter = pipeableSink(writeArray)
+  arrayWriter = pull.writeArray
 
   t.equal('function', typeof read)
   t.equal('function', typeof read.pipe)

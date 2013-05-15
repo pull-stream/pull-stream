@@ -56,4 +56,19 @@ test('Source.pipe(Sink) -> undefined', function (t) {
   t.end()
 })
 
+test('maybe(cb) -> Sink', function (t) {
+  var n = pull.collect(function (){})
+  console.log('Sink?', n)
+  t.equal(n.type, 'Sink')
+  t.end()
+})
+
+test('maybe(cb) -> Through', function (t) {
+  console.error('***********')
+  var n = pull.collect()
+  console.error('Through?', n)
+  t.equal(n.type, 'Through')
+  t.end()
+})
+
 
