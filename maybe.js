@@ -33,7 +33,6 @@ module.exports = function (pull) {
 
   var reduce = exports.reduce = 
   function (reduce, acc, cb) {
-    console.log('maybeSink---', reduce, acc, cb)
     
     return maybeSink(function (cb) {
       return drain(function (data) {
