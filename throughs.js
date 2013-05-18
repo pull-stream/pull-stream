@@ -118,7 +118,7 @@ function (read, op, onEnd) {
 
 var take = exports.take =
 function (read, test) {
-  var ended = false, more
+  var ended = false
   if('number' === typeof test) {
     var n = test; test = function () {
       return n --
@@ -127,12 +127,11 @@ function (read, test) {
 
   return function (end, cb) {
     if(ended) return cb(ended)
-    if(1 === more) end = true
     if(ended = end) return read(ended, cb)
 
     read(null, function (end, data) {
       if(ended = ended || end) return cb(ended)
-      if(!(more = test(data))) {
+      if(!test(data)) {
         ended = true
         read(true, function (end, data) {
           cb(ended, data)
