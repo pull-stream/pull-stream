@@ -1,20 +1,30 @@
 
 
 var pull = require('../')
-require('tape')('through - onEnd', function (t) {
+
+var test = require('tape')
+
+test('through - onEnd', function (t) {
   t.plan(2)
   var values = [1,2,3,4,5,6,7,8,9,10]
 
   //read values, and then just stop!
   //this is a subtle edge case for take!
-  pull.Source(function () {
-    return function (end, cb) {
-      if(end) cb(end)
-      else if(values.length)
-        cb(null, values.shift())
-      else console.log('drop')
-    }
-  })()
+
+//I did have a thing that used this edge case,
+//but it broke take, actually. so removing it.
+//TODO: fix that thing - was a test for some level-db stream thing....
+
+//  pull.Source(function () {
+//    return function (end, cb) {
+//      if(end) cb(end)
+//      else if(values.length)
+//        cb(null, values.shift())
+//      else console.log('drop')
+//    }
+//  })()
+
+  pull.values(values)
   .pipe(pull.take(10))
   .pipe(pull.through(null, function (err) {
     console.log('end')
@@ -30,3 +40,12 @@ require('tape')('through - onEnd', function (t) {
 
 })
 
+
+test('take 5', function (t) {
+  pull.values([1,2,3,4,5,6,7,8,9,10])
+  .pipe(pull.take(5))
+  .pipe(pull.collect(function (err, five) {
+    t.deepEqual(five, [1,2,3,4,5])
+    t.end()
+  }))
+})
