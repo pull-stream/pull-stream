@@ -1,4 +1,4 @@
-var u      = require('./util')
+var u      = require('pull-core')
 var sources = require('./sources')
 var sinks = require('./sinks')
 

@@ -2,7 +2,7 @@
 var sources  = require('./sources')
 var sinks    = require('./sinks')
 var throughs = require('./throughs')
-var u        = require('./util')
+var u        = require('pull-core')
 
 for(var k in sources)
   exports[k] = u.Source(sources[k])

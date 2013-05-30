@@ -1,4 +1,4 @@
-var u = require('./util')
+var u = require('pull-core')
 var prop = u.prop
 var id   = u.id
 var maybeSink = u.maybeSink
