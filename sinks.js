@@ -1,28 +1,28 @@
 var drain = exports.drain = function (read, op, done) {
-  ;(function next() {
-    var sync = true, returned = false, loop = true
-    do {
-      returned = false; sync = true
-      read(null, function (err, data) {
-        returned = true
-        
-        if(err) {
-          done && done(err === true ? null : err)
-          return loop = false
-        }
 
-        if(op) {
-          //return false to abort!
-          if(false === op(data)) {
-            loop = false
-            return read(true, done || function () {})
-          }
+  ;(function next() {
+    var loop = true, cbed = false
+    while(loop) {
+      cbed = false
+      read(null, function (end, data) {
+        cbed = true
+        if(end) {
+          loop = false
+          done && done(end === true ? null : end)
         }
-        if(!sync) next()
+        else if(op && false === op(data)) {
+          loop = false
+          read(true, done || function () {})
+        }
+        else if(!loop){
+          next()
+        }
       })
-      sync = false
-      if(!returned) return
-    } while (loop);
+      if(!cbed) {
+        loop = false
+        return
+      }
+    }
   })()
 }
 
