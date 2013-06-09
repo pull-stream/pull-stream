@@ -3,13 +3,14 @@ var test = require('tape')
 var pull = require('../')
 
 test('filtered randomnes', function (t) {
-  pull.infinite()
-    .pipe(pull.filter(function (d) {
+  pull(
+    pull.infinite(),
+    pull.filter(function (d) {
       console.log('f', d)
       return d > 0.5
-    }))
-    .pipe(pull.take(100))
-    .pipe(pull.writeArray(function (err, array) {
+    }),
+    pull.take(100),
+    pull.writeArray(function (err, array) {
       t.equal(array.length, 100)
       array.forEach(function (d) {
         t.ok(d > 0.5)
@@ -17,25 +18,27 @@ test('filtered randomnes', function (t) {
       })
       console.log(array)
       t.end()
-
-    }))
+    })
+  )
 })
 
 test('filter with regexp', function (t) {
-  pull.infinite()
-    .pipe(pull.map(function (d) {
+  pull(
+    pull.infinite(),
+    pull.map(function (d) {
       return Math.round(d * 1000).toString(16)
-    }))
-    .pipe(pull.filter(/^[^e]+$/i)) //no E
-    .pipe(pull.take(37))
-    .pipe(pull.writeArray(function (err, array) {
+    }),
+    pull.filter(/^[^e]+$/i), //no E
+    pull.take(37),
+    pull.writeArray(function (err, array) {
       t.equal(array.length, 37)
       console.log(array)
       array.forEach(function (d) {
         t.equal(d.indexOf('e'), -1)
       })
       t.end()
-    }))
+    })
+  )
 })
 
 test('inverse filter with regexp', function (t) {

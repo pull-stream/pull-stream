@@ -28,39 +28,43 @@ function ls_r (start, type) {
 test('widthFirst', function (t) {
   var max = 0, didStart
 
-  ls_r(start, pull.widthFirst)
-    .pipe(pull.map(function (file) {
+  pull(
+    ls_r(start, pull.widthFirst),
+    pull.map(function (file) {
       if(file === start) didStart = true
       return file.split('/').length
-    }))
-    .pipe(pull.filter(function (d) {
+    }),
+    pull.filter(function (d) {
       t.ok(d >= max)
       if(d > max)
         return max = d, true
-    }))
-    .pipe(pull.through(console.log))
-    .pipe(pull.drain(null, function () {
+    }),
+    pull.through(console.log),
+    pull.drain(null, function () {
       t.ok(didStart)
       t.end()
-    }))
+    })
+  )
 })
 
 test('depthFirst', function (t) {
   var seen = {}
   //assert that for each item,
   //you have seen the dir already
-  ls_r(start, pull.depthFirst)
-    .pipe(pull.through(function (file) {
+  pull(
+    ls_r(start, pull.depthFirst),
+    pull.through(function (file) {
       if(file != start) {
         var dir = path.dirname(file)
         t.ok(seen[dir])
       }
       //console.log(dir)
       seen[file] = true
-    }))
-    .pipe(pull.onEnd(function () {
+    }),
+    pull.onEnd(function () {
       t.end()
-    }))
+    })
+  )
 
 })
 
