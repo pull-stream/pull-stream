@@ -15,12 +15,15 @@ optimized for "object" streams, but still supporting text streams.
 Stat some files:
 
 ```js
-pull.values(['file1', 'file2', 'file3'])
-.pipe(pull.asyncMap(fs.stat))
-.pipe(pull.collect(function (err, array) {
-  console.log(array)
-})
+pull(
+  pull.values(['file1', 'file2', 'file3'])
+  pull.asyncMap(fs.stat)
+  pull.collect(function (err, array) {
+    console.log(array)
+  })
+)
 ```
+note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
 
 The best thing about pull-stream is that it can be completely lazy.
 This is perfect for async traversals where you might want to stop early.
@@ -56,7 +59,7 @@ var createSinkStream = pull.Sink(function (read) {
   })
 })
 
-createSourceStream().pipe(createThroughStream()).pipe(createSinkStream())
+pull(createSourceStream(), createThroughStream()), createSinkStream())
 ```
 
 ### Readable & Reader vs. Readable & Writable
@@ -126,7 +129,7 @@ logger()(randomReadable())
 Or, if you prefer to read things left-to-right
 
 ```js
-randomReadable().pipe(logger())
+pull(randomReadable(), logger())
 ```
 
 ### Through / Duplex
@@ -153,25 +156,19 @@ Every pipeline must go from a `source` to a `sink`.
 Data will not start moving until the whole thing is connected.
 
 ```js
-source.pipe(through).pipe(sink)
+pull(source, through, sink)
 ```
 
-When setting up pipeability, you must use the right
-function, so `pipe` has the right behavior.
-
-Use `Source`, `Through` and `Sink`,
-to add pipeability to your pull-streams.
-
-## More Cool Stuff
-
-What if you could do this?
+some times, it's simplest to describe a stream in terms of other streams.
+pull can detect what sort of stream it starts with (by counting arguments)
+and if you pull together through streams, it gives you a new through stream.
 
 ```js
 var tripleThrough =
-  through1().pipe(through2()).pipe(through3())
+  pull(through1(), through2(), through3())
 //THE THREE THROUGHS BECOME ONE
 
-source().pipe(tripleThrough).pipe(sink())
+pull(source(), tripleThrough, sink())
 ```
 
 ## Design Goals & Rationale
@@ -195,7 +192,7 @@ of objects.
 
 ### A pipeline is also a stream.
 
-This should work: `a.pipe(x.pipe(y).pipe(z)).pipe(b)`
+Something like this should work: `a.pipe(x.pipe(y).pipe(z)).pipe(b)`
 this makes it possible to write a custom stream simply by
 combining a few available streams.
 
