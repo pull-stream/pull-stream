@@ -1,8 +1,26 @@
-
 var sources  = require('./sources')
 var sinks    = require('./sinks')
 var throughs = require('./throughs')
 var u        = require('pull-core')
+
+function isThrough (fun) {
+  return fun.type === "Through" || fun.length === 1
+}
+
+var exports = module.exports = function pull () {
+  var args = [].slice.call(arguments)
+
+  if(isThrough(args[0]))
+    return function (read) {
+      args.unshift(read)
+      return pull.apply(null, args)
+    }
+
+  var read = args.shift()
+  while(args.length)
+    read = args.shift() (read)
+  return read
+}
 
 for(var k in sources)
   exports[k] = u.Source(sources[k])
