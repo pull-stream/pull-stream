@@ -52,5 +52,12 @@ module.exports = function (pull) {
     }, [], cb)
   }
 
+  var concat = exports.concat =
+  function (cb) {
+    return reduce(function (a, b) {
+      return a + b
+    }, '', cb)
+  }
+
   return exports
 }
