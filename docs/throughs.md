@@ -14,6 +14,14 @@ source()
   .pipe(sink())
 ```
 
+If you have a through stream which can be used as a source,
+force it into source mode:
+
+``` js
+var source = pull.source(someThroughThatsASource)
+source.pipe(sink())
+```
+
 Also, if you don't have the source/sink yet,
 you can pipe multiple through streams together
 to get one through stream!
