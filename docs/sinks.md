@@ -1,4 +1,3 @@
-
 # Sinks
 
 A Source is a stream that is not readable.
@@ -12,6 +11,10 @@ source()
   .pipe(through()) //optional
   .pipe(sink())
 ```
+
+See also:
+* [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
+* [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
 
 ## drain (op?, done?)
 

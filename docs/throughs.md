@@ -5,7 +5,7 @@ another stream.
 
 Through streams are optional.
 
-Put through streams in-between sources and sinks,
+Put through streams in-between [sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md) and [sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md),
 like this:
 
 ``` js
@@ -31,6 +31,10 @@ Which can then be treated like a normal through stream!
 ``` js
 source().pipe(throughABC()).pipe(sink())
 ```
+
+See also:
+* [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
+* [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
 
 ## map (fun)
 
