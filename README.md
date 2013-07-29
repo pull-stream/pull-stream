@@ -16,8 +16,8 @@ Stat some files:
 
 ```js
 pull(
-  pull.values(['file1', 'file2', 'file3'])
-  pull.asyncMap(fs.stat)
+  pull.values(['file1', 'file2', 'file3']),
+  pull.asyncMap(fs.stat),
   pull.collect(function (err, array) {
     console.log(array)
   })
