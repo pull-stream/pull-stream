@@ -288,5 +288,39 @@ function (read, highWaterMark) {
   }
 }
 
+var upto = exports.upto = 
+function (read, n, highWaterMark) {
+  var buffer = [], waiting = [], ended, reading = false
+  highWaterMark = highWaterMark || 10
+  n = n || 1
+
+  function readAhead () {
+    while(waiting.length && (buffer.length || ended))
+      waiting.shift()(ended, ended ? null : buffer.shift(n))
+  }
+
+  function next () {
+    if(ended || reading || buffer.length >= highWaterMark)
+      return
+    reading = true
+    return read(ended, function (end, data) {
+      reading = false
+      ended = ended || end
+      if(data != null) buffer.push(data)
+      
+      next(); readAhead()
+    })
+  }
+
+  nextTick(next)
+
+  return function (end, cb) {
+    ended = ended || end
+    waiting.push(cb)
+
+    next(); readAhead()
+  }
+}
+
 
 
