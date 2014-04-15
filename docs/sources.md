@@ -12,6 +12,10 @@ source()
   .pipe(sink())
 ```
 
+See also:
+* [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
+* [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
+
 ## values (array | object)
 
 create a SourceStream that reads the values from an array or object and then stops.
