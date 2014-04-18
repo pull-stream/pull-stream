@@ -27,6 +27,7 @@ var exports = module.exports = function pull () {
     read = read.source
 
   function next () {
+    if(!args.length) return read
     var s = args.shift()
 
     if(null == s)
