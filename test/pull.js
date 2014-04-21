@@ -95,7 +95,3 @@ tape('turn pull(through,...) -> Through', function (t) {
 //  )
 //
 
-tape('should not range error', function (t) {
-  pull(pull.values([]), null) //will error if this throws
-  t.end()
-})
