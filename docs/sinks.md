@@ -1,8 +1,7 @@
-
 # Sinks
 
-A Source is a stream that is not readable.
-You *must* have a source at the start of a pipeline
+A Sink is a stream that is not readable.
+You *must* have a sink at the end of a pipeline
 for data to move through.
 
 You can only use _one_ sink per pipeline.
@@ -12,6 +11,10 @@ source()
   .pipe(through()) //optional
   .pipe(sink())
 ```
+
+See also:
+* [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
+* [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
 
 ## drain (op?, done?)
 
