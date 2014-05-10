@@ -28,13 +28,21 @@ note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
 The best thing about pull-stream is that it can be completely lazy.
 This is perfect for async traversals where you might want to stop early.
 
+## Compatibily with node streams
+
+pull-streams are not _directly_ compatible with node streams,
+but pull-streams can be converted into node streams with
+[pull-stream-to-stream](https://github.com/dominictarr/pull-stream-to-stream)
+and node streams can be converted into pull-stream using [stream-to-pull-stream](https://github.com/dominictarr/stream-to-pull-stream)
+
+
 ## Examples
 
 What if implementing a stream was this simple:
 
 ### Pipeable Streams
 
-`pull.{Source,Through,Sink}` just wrap a function and give it a `.pipe(dest)`!
+`pull.{Source,Through,Sink}` wraps a function and added a `type` property to signify what type of pull-stream it is.
 
 ```js
 var pull = require('pull-stream')
