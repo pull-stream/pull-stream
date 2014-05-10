@@ -9,9 +9,15 @@ var tester = u.tester
 var map = exports.map = 
 function (read, map) {
   map = prop(map) || id
-  return function (end, cb) {
-    read(end, function (end, data) {
-      var data = !end ? map(data) : null
+  return function (abort, cb) {
+    read(abort, function (end, data) {
+      try {
+      data = !end ? map(data) : null
+      } catch (err) {
+        return read(err, function () {
+          return cb(err)
+        })
+      }
       cb(end, data)
     })
   }
