@@ -25,13 +25,13 @@ function (array) {
   var i = 0
   return function (end, cb) {
     if(end)
-      return cb && cb(end)  
+      return cb && cb(end)
     cb(i >= array.length || null, array[i++])
   }
 }
 
 
-var count = exports.count = 
+var count = exports.count =
 function (max) {
   var i = 0; max = max || Infinity
   return function (end, cb) {
@@ -42,7 +42,7 @@ function (max) {
   }
 }
 
-var infinite = exports.infinite = 
+var infinite = exports.infinite =
 function (generate) {
   generate = generate || Math.random
   return function (end, cb) {
@@ -104,7 +104,7 @@ function (start, createStream) {
 }
 //width first is just like depth first,
 //but push each new stream onto the end of the queue
-var widthFirst = exports.widthFirst = 
+var widthFirst = exports.widthFirst =
 function (start, createStream) {
   var reads = []
 
@@ -127,12 +127,12 @@ function (start, createStream) {
 //this came out different to the first (strm)
 //attempt at leafFirst, but it's still a valid
 //topological sort.
-var leafFirst = exports.leafFirst = 
+var leafFirst = exports.leafFirst =
 function (start, createStream) {
   var reads = []
   var output = []
   reads.push(once(start))
-  
+
   return function next (end, cb) {
     reads[0](end, function (end, data) {
       if(end) {
