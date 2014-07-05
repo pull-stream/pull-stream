@@ -261,30 +261,32 @@ var _reduce = exports._reduce = function (read, reduce, initial) {
 
 var nextTick = process.nextTick
 
-var highWaterMark = exports.highWaterMark = 
+var highWaterMark = exports.highWaterMark =
 function (read, highWaterMark) {
-  var buffer = [], waiting = [], ended, reading = false
+  var buffer = [], waiting = [], ended, ending, reading = false
   highWaterMark = highWaterMark || 10
 
   function readAhead () {
     while(waiting.length && (buffer.length || ended))
       waiting.shift()(ended, ended ? null : buffer.shift())
+
+    if (!buffer.length && ending) ended = ending;
   }
 
   function next () {
-    if(ended || reading || buffer.length >= highWaterMark)
+    if(ended || ending || reading || buffer.length >= highWaterMark)
       return
     reading = true
-    return read(ended, function (end, data) {
+    return read(ended || ending, function (end, data) {
       reading = false
-      ended = ended || end
+      ending = ending || end
       if(data != null) buffer.push(data)
-      
+
       next(); readAhead()
     })
   }
 
-  nextTick(next)
+  process.nextTick(next)
 
   return function (end, cb) {
     ended = ended || end
