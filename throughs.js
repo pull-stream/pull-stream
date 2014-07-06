@@ -282,7 +282,7 @@ function (read, highWaterMark) {
       ending = ending || end
       if(data != null) buffer.push(data)
 
-      next(); readAhead()
+      readAhead(); next()
     })
   }
 
@@ -292,7 +292,7 @@ function (read, highWaterMark) {
     ended = ended || end
     waiting.push(cb)
 
-    next(); readAhead()
+    readAhead(); next()
   }
 }
 
