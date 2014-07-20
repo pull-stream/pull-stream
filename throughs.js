@@ -296,5 +296,27 @@ function (read, highWaterMark) {
   }
 }
 
+var flatMap = exports.flatMap =
+function (read, mapper) {
+  mapper = mapper || id
+  var queue = [], ended
 
+  return function (abort, cb) {
+    if(queue.length) return cb(null, queue.shift())
+    else if(ended)   return cb(ended)
+
+    read(abort, function next (end, data) {
+      if(end) ended = end
+      else {
+        var add = mapper(data)
+        while(add && add.length)
+          queue.push(add.shift())
+      }
+
+      if(queue.length) cb(null, queue.shift())
+      else if(ended)   cb(ended)
+      else             read(null, next)
+    })
+  }
+}
 
