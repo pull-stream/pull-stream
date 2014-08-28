@@ -8,7 +8,9 @@ var drain = exports.drain = function (read, op, done) {
         cbed = true
         if(end) {
           loop = false
-          done && done(end === true ? null : end)
+          if(done) done(end === true ? null : end)
+          else if(end && end !== true)
+            throw end
         }
         else if(op && false === op(data)) {
           loop = false
