@@ -8,7 +8,7 @@ module.exports = function (pull) {
   var exports = {}
   var drain = pull.drain
 
-  var find = 
+  var find =
   exports.find = function (test, cb) {
     return maybeSink(function (cb) {
       var ended = false
@@ -31,9 +31,9 @@ module.exports = function (pull) {
     }, cb)
   }
 
-  var reduce = exports.reduce = 
+  var reduce = exports.reduce =
   function (reduce, acc, cb) {
-    
+
     return maybeSink(function (cb) {
       return drain(function (data) {
         acc = reduce(acc, data)
