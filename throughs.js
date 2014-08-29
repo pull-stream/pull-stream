@@ -215,7 +215,7 @@ var flatten = exports.flatten = function (read) {
       read(null, function (end, stream) {
         if(end)
           return cb(end)
-        if(Array.isArray(stream))
+        if(Array.isArray(stream) || stream && 'object' === typeof stream)
           stream = sources.values(stream)
         else if('function' != typeof stream)
           throw new Error('expected stream of streams')
