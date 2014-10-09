@@ -82,6 +82,12 @@ var empty = exports.empty = function () {
   }
 }
 
+var error = exports.error = function (err) {
+  return function (abort, cb) {
+    cb(err)
+  }
+}
+
 var depthFirst = exports.depthFirst =
 function (start, createStream) {
   var reads = []
