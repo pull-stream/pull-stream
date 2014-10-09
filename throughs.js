@@ -6,7 +6,7 @@ var prop   = u.prop
 var id     = u.id
 var tester = u.tester
 
-var map = exports.map = 
+var map = exports.map =
 function (read, map) {
   map = prop(map) || id
   return function (abort, cb) {
@@ -109,7 +109,7 @@ function (read, test) {
   })
 }
 
-var through = exports.through = 
+var through = exports.through =
 function (read, op, onEnd) {
   var a = false
   function once (abort) {
@@ -219,7 +219,6 @@ var flatten = exports.flatten = function (read) {
           stream = sources.values(stream)
         else if('function' != typeof stream)
           throw new Error('expected stream of streams')
-        
         _read = stream
         nextChunk()
       })
