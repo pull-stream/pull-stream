@@ -1,7 +1,7 @@
 {
   "name": "pull-stream",
   "description": "minimal pull stream",
-  "version": "2.26.0",
+  "version": "2.26.1",
   "homepage": "https://github.com/dominictarr/pull-stream",
   "repository": {
     "type": "git",
