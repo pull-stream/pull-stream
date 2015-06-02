@@ -18,6 +18,10 @@ function (value) {
 
 var values = exports.values = exports.readArray =
 function (array) {
+  if(!array)
+    return function (abort, cb) {
+      return cb(abort || true)
+    }
   if(!Array.isArray(array))
     array = Object.keys(array).map(function (k) {
       return array[k]
