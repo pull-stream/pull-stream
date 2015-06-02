@@ -8,10 +8,11 @@
     "url": "git://github.com/dominictarr/pull-stream.git"
   },
   "dependencies": {
-    "pull-core": "~1.0.0"
+    "pull-core": "~1.1.0"
   },
   "devDependencies": {
-    "tape": "~2.12.3"
+    "tape": "~2.12.3",
+    "pull-abortable": "~2.0.0"
   },
   "scripts": {
     "test": "set -e; for t in test/*.js; do node $t; done"
