@@ -4,10 +4,17 @@ function (object) {
   return values(Object.keys(object))
 }
 
+function abortCb(cb, abort, onAbort) {
+  cb(abort)
+  onAbort && onAbort(abort === true ? null: abort)
+  return
+}
+
 var once = exports.once =
-function (value) {
+function (value, onAbort) {
   return function (abort, cb) {
-    if(abort) return cb(abort)
+    if(abort)
+      return abortCb(cb, abort, onAbort)
     if(value != null) {
       var _value = value; value = null
       cb(null, _value)
@@ -17,19 +24,20 @@ function (value) {
 }
 
 var values = exports.values = exports.readArray =
-function (array) {
+function (array, onAbort) {
   if(!array)
     return function (abort, cb) {
-      return cb(abort || true)
+      if(abort) return abortCb(cb, abort, onAbort)
+      return cb(true)
     }
   if(!Array.isArray(array))
     array = Object.keys(array).map(function (k) {
       return array[k]
     })
   var i = 0
-  return function (end, cb) {
-    if(end)
-      return cb && cb(end)
+  return function (abort, cb) {
+    if(abort)
+      return abortCb(cb, abort, onAbort)
     cb(i >= array.length || null, array[i++])
   }
 }
