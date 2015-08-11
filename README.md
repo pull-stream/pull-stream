@@ -67,7 +67,7 @@ var createSinkStream = pull.Sink(function (read) {
   })
 })
 
-pull(createSourceStream(), createThroughStream()), createSinkStream())
+pull(createSourceStream(), createThroughStream(), createSinkStream())
 ```
 
 ### Readable & Reader vs. Readable & Writable
