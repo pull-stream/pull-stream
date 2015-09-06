@@ -87,7 +87,7 @@ that may be called many times,
 and will (asynchronously) `callback(null, data)` once for each call.
 
 The readable stream eventually `callback(err)` if there was an error, or `callback(true)`
-if the stream has no more data.
+if the stream has no more data. In both cases a second argument will be irgnored. That is, the readable stream either provides data _or_ indicates an error or end-of-data condition, never both.
 
 if the user passes in `end = true`, then stop getting data from wherever.
 
