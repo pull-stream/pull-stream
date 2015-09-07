@@ -16,6 +16,26 @@ test('flatten arrays', function (t) {
   )
 })
 
+test('flatten - number of reads', function (t) {
+  var reads = 0
+  pull(
+    pull.values([
+      pull.values([1, 2, 3]),
+    ]),
+    pull.flatten(),
+    pull.through(function() {
+      reads++
+      console.log('READ', reads)
+    }),
+    pull.take(2),
+    pull.collect(function (err, numbers) {
+      t.deepEqual([1, 2], numbers)
+      t.equal(reads, 2)
+      t.end()
+    })
+  )
+
+})
 test('flatten stream of streams', function (t) {
 
   pull(
