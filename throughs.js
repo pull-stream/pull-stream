@@ -205,6 +205,7 @@ function (read, size) {
 var flatten = exports.flatten = function (read) {
   var _read
   return function (abort, cb) {
+    if (abort) return read(abort, cb)
     if(_read) nextChunk()
     else      nextStream()
 
