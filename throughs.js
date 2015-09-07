@@ -129,11 +129,14 @@ function (read, op, onEnd) {
 }
 
 var take = exports.take =
-function (read, test) {
+function (read, test, opts) {
+  opts = opts || {}
+  var last = opts.last || false // whether the first item for which !test(item) should still pass
   var ended = false
   if('number' === typeof test) {
+    last = true
     var n = test; test = function () {
-      return n --
+      return --n
     }
   }
 
@@ -145,8 +148,8 @@ function (read, test) {
       if(ended = ended || end) return cb(ended)
       if(!test(data)) {
         ended = true
-        read(true, function (end, data) {
-          cb(ended, data)
+        read(true, function () {
+          last ? cb(end, data) : cb(true)
         })
       }
       else

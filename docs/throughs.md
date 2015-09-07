@@ -67,9 +67,13 @@ it will filter nodes which have repeated values for that property.
 Filter unique items -- get the duplicates.
 The inverse of `unique`
 
-## take (test)
+## take (test [, opts])
 
-Read from the source stream until `test` fails.
+If test is a function, read data from the source stream and forward it downstream until test(data) returns false.
+
+If `opts.last` is set to true, the data for which the test failed will be included in what is forwarded.
+
+If test is an integer, take n item from the source.
 
 ## group (length)
 
