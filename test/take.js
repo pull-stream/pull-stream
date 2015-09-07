@@ -39,10 +39,20 @@ test('through - onEnd', function (t) {
 })
 
 
-test('take 5', function (t) {
+test('take - exclude last (default)', function (t) {
   pull(
     pull.values([1,2,3,4,5,6,7,8,9,10]),
-    pull.take(5),
+    pull.take(function(n) {return n<5}),
+    pull.collect(function (err, four) {
+      t.deepEqual(four, [1,2,3,4])
+      t.end()
+    })
+  )
+})
+test('take - include last', function (t) {
+  pull(
+    pull.values([1,2,3,4,5,6,7,8,9,10]),
+    pull.take(function(n) {return n<5}, {last: true}),
     pull.collect(function (err, five) {
       t.deepEqual(five, [1,2,3,4,5])
       t.end()
