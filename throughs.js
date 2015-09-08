@@ -140,21 +140,28 @@ function (read, test, opts) {
     }
   }
 
-  return function (end, cb) {
-    if(ended) return cb(ended)
-    if(ended = end) return read(ended, cb)
-
-    read(null, function (end, data) {
-      if(ended = ended || end) return cb(ended)
-      if(!test(data)) {
-        ended = true
-        read(true, function () {
-          last ? cb(end, data) : cb(true)
-        })
-      }
-      else
-        cb(null, data)
+  function terminate (cb) {
+    read(true, function (err) {
+      last = false; cb(err || true)
     })
+  }
+
+  return function (end, cb) {
+    if(ended)            last ? terminate(cb) : cb(ended)
+    else if(ended = end) read(ended, cb)
+    else
+      read(null, function (end, data) {
+        if(ended = ended || end) {
+          //last ? terminate(cb) :
+          cb(ended)
+        }
+        else if(!test(data)) {
+          ended = true
+          last ? cb(null, data) : terminate(cb)
+        }
+        else
+          cb(null, data)
+      })
   }
 }
 

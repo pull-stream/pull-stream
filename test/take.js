@@ -81,3 +81,40 @@ test('take 5 causes 5 reads upstream', function (t) {
     })
   )
 })
+
+test("take doesn't abort until the last read", function (t) {
+
+  var aborted = false
+
+  var ary = [1,2,3,4,5], i = 0
+
+  var read = pull(
+    function (abort, cb) {
+      if(abort) cb(aborted = true)
+      else if(i > ary.length) cb(true)
+      else cb(null, ary[i++])
+    },
+    pull.take(function (d) {
+      return d < 3
+    }, {last: true})
+  )
+
+  read(null, function (_, d) {
+    t.notOk(aborted, "hasn't aborted yet")
+    read(null, function (_, d) {
+      t.notOk(aborted, "hasn't aborted yet")
+      read(null, function (_, d) {
+        t.notOk(aborted, "hasn't aborted yet")
+        read(null, function (end, d) {
+          t.ok(end, 'stream ended')
+          t.equal(d, undefined, 'data undefined')
+          t.ok(aborted, "has aborted by now")
+          t.end()
+        })
+      })
+    })
+  })
+
+})
+
+
