@@ -53,4 +53,20 @@ test('flatten stream of streams', function (t) {
 
 })
 
+test.only('flatten stream of broken streams', function (t) {
+  var _err = new Error('I am broken');
+  pull(
+    pull.values([
+      pull.Source(function read(abort, cb) {
+          cb(_err)  
+        })
+    ]),
+    pull.flatten(),
+    pull.onEnd(function (err) {
+      t.equal(err, _err)
+      t.end()
+    })
+  )
+
+})
 
