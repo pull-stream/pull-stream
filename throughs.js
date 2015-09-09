@@ -210,9 +210,10 @@ var flatten = exports.flatten = function (read) {
     else      nextStream()
 
     function nextChunk () {
-      _read(null, function (end, data) {
-        if(end) nextStream()
-        else    cb(null, data)
+      _read(null, function (err, data) {
+        if (err === true) nextStream()
+        else if (err) cb(err)
+        else cb(null, data)
       })
     }
     function nextStream () {
