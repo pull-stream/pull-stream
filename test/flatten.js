@@ -53,7 +53,7 @@ test('flatten stream of streams', function (t) {
 
 })
 
-test.only('flatten stream of broken streams', function (t) {
+test('flatten stream of broken streams', function (t) {
   var _err = new Error('I am broken');
   pull(
     pull.values([
