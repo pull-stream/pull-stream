@@ -261,6 +261,35 @@ are not there.
 
 This makes laziness work right.
 
+### handling end/abort/error in through streams
+
+Rules for implementing read in a through stream:
+1) if called with true (meaning downstream, i.e. the sink has enough data)
+
+    just forward the exact read() call to the upstream chain to inform everyone.
+    switch to a new mode, where any attempt to read() is answered with cb(true)
+
+2) if instead we have enough data
+
+    initiate an abort by calling read(true) (causing the aforementioned behaviour (1) upstream)
+        make sure to pass any potential err (failure during abort) down the downstream chain
+        if all goes well, err will just be the value true
+        both cases will cause the behaviour (3) described below downstream
+
+3) if, during a read(null, cb) from upstream (i.e. the Source), our callback is called with err !== null (meaning upstream, i.e. the Source, is either exhausted or has a problem)
+
+    forward that exact callback towards the downstream chain (towards Sink) to inform everybody.
+    switch to a new mode, where any attempt to read() is answered with cb(err) (the err we received)
+
+In none of the above cases data is flowing!
+4) If data is flowing (normal operation: read(null, cb) causes cb(null, data)
+
+    forward data downstream (towards the Sink)
+    do none of the above!
+
+There either is data flowing (4) OR you have the error/abort cases (1-3), never both.
+
+
 ## License
 
 MIT
