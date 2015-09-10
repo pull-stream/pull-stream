@@ -261,28 +261,45 @@ are not there.
 
 This makes laziness work right.
 
+### handling end, error, and abort.
+
+in pull streams, any part of the stream (source, sink, or through)
+may terminate the stream. (this is the case with node streams too,
+but it's not handled well).
+
+#### source: end, error
+
+A source may end (`cb(true)` after read) or error (`cb(error)` after read)
+After ending, the source *must* never `cb(null, data)`
+
+#### sink: abort
+
+Sinks do not normally end the stream, but if they decide they do
+not need any more data they may "abort" the source by calling `read(true, cb)`.
+A abort (`read(true, cb)`) may be called before a preceding read call
+has called back.
+
 ### handling end/abort/error in through streams
 
-Rules for implementing read in a through stream:
-1) if called with true (meaning downstream, i.e. the sink has enough data)
+Rules for implementing `read` in a through stream:
+1) Sink wants to stop. sink aborts the through
 
-    just forward the exact read() call to the upstream chain to inform everyone.
-    switch to a new mode, where any attempt to read() is answered with cb(true)
+    just forward the exact read() call to your source,
+    any future read calls should cb(true).
 
-2) if instead we have enough data
+2) We want to stop. (abort from the middle of the stream)
 
-    initiate an abort by calling read(true) (causing the aforementioned behaviour (1) upstream)
-        make sure to pass any potential err (failure during abort) down the downstream chain
-        if all goes well, err will just be the value true
-        both cases will cause the behaviour (3) described below downstream
+    abort your source, and then cb(true) to tell the sink we have ended.
+    If the source errored during abort, end the sink by cb read with `cb(err)`.
+    (this will be an ordinary end/error for the sink)
 
-3) if, during a read(null, cb) from upstream (i.e. the Source), our callback is called with err !== null (meaning upstream, i.e. the Source, is either exhausted or has a problem)
+3) Source wants to stop. (`read(null, cb) -> cb(err||true)`)
 
-    forward that exact callback towards the downstream chain (towards Sink) to inform everybody.
-    switch to a new mode, where any attempt to read() is answered with cb(err) (the err we received)
+    forward that exact callback towards the sink chain,
+    we must respond to any future read calls with `cb(err||true)`.
 
 In none of the above cases data is flowing!
-4) If data is flowing (normal operation: read(null, cb) causes cb(null, data)
+4) If data is flowing (normal operation:   `read(null, cb) -> cb(null, data)`
 
     forward data downstream (towards the Sink)
     do none of the above!
