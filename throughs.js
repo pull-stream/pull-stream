@@ -205,14 +205,23 @@ function (read, size) {
 var flatten = exports.flatten = function (read) {
   var _read
   return function (abort, cb) {
-    if (abort) return read(abort, cb)
-    if(_read) nextChunk()
-    else      nextStream()
+    if (abort) {
+      _read ? _read(abort, function(err) {
+        read(err || abort, cb)
+      }) : read(abort, cb)
+    }
+    else if(_read) nextChunk()
+    else nextStream()
 
     function nextChunk () {
       _read(null, function (err, data) {
         if (err === true) nextStream()
-        else if (err) cb(err)
+        else if (err) {
+          read(true, function(abortErr) {
+            // TODO: what do we do with the abortErr?
+            cb(err)
+          })
+        }
         else cb(null, data)
       })
     }
