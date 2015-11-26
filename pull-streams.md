@@ -5,15 +5,12 @@ In Pull-Streams, there are two fundamental types of streams `Source`s and `Sink`
 # Pull-Streams
 ## Source Streams
 
-A Source Stream (aka readable stream) is a async function that may be called repeatedly until it returns a terminal state.
-You _must not_ call the read function until the previous call has returned, except for a call to abort the stream.
-pull-streams have back pressure, but it implicit instead of sending an explicit back pressure signal. If a source
-needs the sink to slow down, it may simply delay returning a read. If a sink needs the source to slow down,
-it just waits until it reads the source again.
+A Source Stream (aka readable stream) is a async function that may be called repeatedly until it returns a terminal state. Pull-streams have back pressure, but it implicit instead of sending an explicit back pressure signal. If a source
+needs the sink to slow down, it may delay returning a read. If a sink needs the source to slow down, it just waits until it reads the source again.
 
 ### Read
 
-A method, for example `read(null, cb(end|err))`, will read data from the stream zero or more times. The read method *must not* be called until the previous call has returned.
+A method, for example `read(null, cb(end|err))`, will read data from the stream zero or more times. The read method *must not* be called until the previous call has returned, except for a call to abort the stream.
 
 ### End
 The stream may be terminated, for example `cb(err|end)`. The read method *must not* be called after it has terminated. As a normal stream end is propagated up the pipeline, an error should be propagated also, because it also means the end of the stream. If `cb(end=true)` that is a "end" which means it's a valid termination, if `cb(err)` that is an error.
