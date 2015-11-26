@@ -2,7 +2,8 @@
 
 In Pull-Streams, there are two fundamental types of streams `Source`s and `Sink`s. There are two composite types of streams `Through` (aka transform) and `Duplex`. A Through Stream is a sink stream that reads what goes into the Source Stream, it can also be written to. A duplex stream is a pair of streams (`{Source, Sink}`) streams.
 
-# Source Stream
+# Pull-Streams
+## Source Streams
 
 A Source Stream (aka readable stream) is a async function that may be called repeatedly until it returns a terminal state.
 You _must not_ call the read function until the previous call has returned, except for a call to abort the stream.
@@ -10,43 +11,44 @@ pull-streams have back pressure, but it implicit instead of sending an explicit 
 needs the sink to slow down, it may simply delay returning a read. If a sink needs the source to slow down,
 it just waits until it reads the source again.
 
-## Read
+### Read
 
 A method, for example `read(null, cb(end|err))`, will read data from the stream zero or more times. The read method *must not* be called until the previous call has returned.
 
-## End
+### End
 The stream may be terminated, for example `cb(err|end)`. The read method *must not* be called after it has terminated. As a normal stream end is propagated up the pipeline, an error should be propagated also, because it also means the end of the stream. If `cb(end=true)` that is a "end" which means it's a valid termination, if `cb(err)` that is an error.
 `error` and `end` are mostly the same. If you are buffering inputs and see an `end`, process those inputs and then the end.
 If you are buffering inputs and get an `error`, then you _may_ throw away that buffer and return the end.
 
-## Abort
+### Abort
 Sometimes it's the sink that errors, and if it can't read anymore then we _must_ abort the source. (example, source is a file stream from local fs, and sink is a http upload. prehaps the network drops or remote server crashes, in this case we should abort the source, so that it's resources can be released.)
 
 To abort the sink, call read with a truthy first argument. You may abort a source _before_ it has returned from a regular read. (if you wait for the previous read to complete, it's possible you'd get a deadlock, if you a reading a stream that takes a long time, example, `tail -f` is reading a file, but nothing has appended to that file yet).
 
-# Sink Stream
+## Sink Streams
 
 A Sink Stream (aka writable stream) is a function that a Source Stream is passed to. The Sink Stream calls the `read` function of the Source Stream, abiding by the rules about when it may not call. 
 
-## Abort
+### Abort
 The Sink Stream may also abort the source if it can no longer read from it.
 
-# Through Streams
+## Through Streams
 
 A through stream is a sink stream that returns another source when it is passed a source.
 A through stream may be thought of as wrapping a source.
 
-# Duplex Streams
+## Duplex Streams
 
 A pair of independent streams, one Source and one Sink. The purpose of a duplex stream is not transformation of the data that passes though it. It's meant for communication only.
-
 
 # Composing Streams
 
 Since a Sink is a function that takes a Source, a Source may be fed into a Sink by simply passing the Source to the Sink.
 For example, `sink(source)`. Since a transform is a Sink that returns a Source, you can just add to that pattern by wrapping the source. For example, `sink(transform(source))`. This works, but it reads from right-to-left, and we are used to left-to-right.
 
-## pull(...)
+```
+pull([source] [,transform ...] [,sink ...])
+```
 
 A method for creating a left-to-rihght reading pipeline of pull-streams.
 
