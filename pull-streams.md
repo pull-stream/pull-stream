@@ -1,8 +1,10 @@
-There are two fundamental types of streams `Source` and `Sink`. There are two composite types of streams `Through` (aka transform) and `Duplex`. A Through Stream is a sink stream that reads what goes into the Source Stream. A duplex stream is a pair of streams (`{Source, Sink}`) streams.
+# Synopsis
+
+In Pull-Streams, there are two fundamental types of streams `Source`s and `Sink`s. There are two composite types of streams `Through` (aka transform) and `Duplex`. A Through Stream is a sink stream that reads what goes into the Source Stream, it can also be written to. A duplex stream is a pair of streams (`{Source, Sink}`) streams.
 
 # Source Stream
 
-A Source Stream (a readable stream) is an async function that may be called repeatedly until it returns a terminal state.
+A Source Stream (aka readable stream) is a async function that may be called repeatedly until it returns a terminal state.
 You _must not_ call the read function until the previous call has returned, except for a call to abort the stream.
 pull-streams have back pressure, but it implicit instead of sending an explicit back pressure signal. If a source
 needs the sink to slow down, it may simply delay returning a read. If a sink needs the source to slow down,
@@ -10,11 +12,11 @@ it just waits until it reads the source again.
 
 ## Read
 
-A method, `read(null, cb(end|err))` read data from the stream. The stream may callback more data `cb(null, data)`. or it may terminate `cb(err|end)`.
-read *must not* be called until the previous call has returned. read *must not* be called after it has terminated.
-As a normal stream end is propagated up the pipeline, an error should be propagated also, because it also means the end of the stream.
-If `cb(end=true)` that is a "end" which means it's a valid termination, if `cb(err)` that is an error.
-`error` and `end` are mostly the same. If you are buffering inputs and see and `end`, process those inputs and then the end.
+A method, for example `read(null, cb(end|err))`, will read data from the stream zero or more times. The read method *must not* be called until the previous call has returned.
+
+## End
+The stream may be terminated, for example `cb(err|end)`. The read method *must not* be called after it has terminated. As a normal stream end is propagated up the pipeline, an error should be propagated also, because it also means the end of the stream. If `cb(end=true)` that is a "end" which means it's a valid termination, if `cb(err)` that is an error.
+`error` and `end` are mostly the same. If you are buffering inputs and see an `end`, process those inputs and then the end.
 If you are buffering inputs and get an `error`, then you _may_ throw away that buffer and return the end.
 
 ## Abort
@@ -24,7 +26,7 @@ To abort the sink, call read with a truthy first argument. You may abort a sourc
 
 # Sink Stream
 
-A Sink Stream (a writable stream) is a function that a Source Stream is passed to. The Sink Stream calls the `read` function of the Source Stream, abiding by the rules about when it may not call. 
+A Sink Stream (aka writable stream) is a function that a Source Stream is passed to. The Sink Stream calls the `read` function of the Source Stream, abiding by the rules about when it may not call. 
 
 ## Abort
 The Sink Stream may also abort the source if it can no longer read from it.
