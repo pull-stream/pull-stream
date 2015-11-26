@@ -43,15 +43,12 @@ A pair of independent streams, one Source and one Sink. The purpose of a duplex 
 
 # Composing Streams
 
-since a sink is a function that takes a source, a source may be fed into a sink by simply passing the source to the sink.
-`sink(source)`. since a transform is a sink that returns a source, you can just add to that pattern by wrapping the source.
-`sink(transform(source))`.
-
-This works, but it reads from right to left, and we are used to left to right.
+Since a Sink is a function that takes a Source, a Source may be fed into a Sink by simply passing the Source to the Sink.
+For example, `sink(source)`. Since a transform is a Sink that returns a Source, you can just add to that pattern by wrapping the source. For example, `sink(transform(source))`. This works, but it reads from right-to-left, and we are used to left-to-right.
 
 ## pull(...)
 
-construct a pipeline of pull streams.
+A method for creating a left-to-rihght reading pipeline of pull-streams.
 
 1. Connect a complete pipeline: `pull(source, transform,* sink)` this connects a source to a sink via zero or more transforms.
 
