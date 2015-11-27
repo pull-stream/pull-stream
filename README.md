@@ -2,13 +2,14 @@
 
 Minimal Pipeable Pull-stream
 
-In [classic-streams](https://github.com/joyent/node/blob/v0.8/doc/api/stream.markdown),
+In [classic-streams](1),
 streams _push_ data to the next stream in the pipeline.
 In [new-streams](https://github.com/joyent/node/blob/v0.10/doc/api/stream.markdown),
 data is pulled out of the source stream, into the destination.
+In [new-classic-streams](
+`pull-stream` is a minimal take on streams,
+pull streams work great for "object" streams as well as streams of raw text or binary data.
 
-`pull-stream` is a minimal take on pull streams,
-optimized for "object" streams, but still supporting text streams.
 
 ## Quick Example
 
@@ -36,88 +37,55 @@ but pull-streams can be converted into node streams with
 and node streams can be converted into pull-stream using [stream-to-pull-stream](https://github.com/dominictarr/stream-to-pull-stream)
 
 
-## Examples
-
-What if implementing a stream was this simple:
-
-### Pipeable Streams
-
-`pull.{Source,Through,Sink}` wraps a function and added a `type` property to signify what type of pull-stream it is.
-
-```js
-var pull = require('pull-stream')
-
-var createSourceStream = pull.Source(function () {
-  return function (end, cb) {
-    return cb(end, Math.random())
-  }
-})
-
-var createThroughStream = pull.Through(function (read) {
-  return function (end, cb) {
-    read(end, cb)
-  }
-})
-
-var createSinkStream = pull.Sink(function (read) {
-  read(null, function next (end, data) {
-    if(end) return
-    console.log(data)
-    read(null, next)
-  })
-})
-
-pull(createSourceStream(), createThroughStream(), createSinkStream())
-```
-
 ### Readable & Reader vs. Readable & Writable
 
 Instead of a readable stream, and a writable stream, there is a `readable` stream,
-and a `reader` stream.
+ (aka "Source") and a `reader` stream (aka "Sink"). Through streams
+is a Sink that returns a Source.
 
 See also:
 * [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
 * [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
 * [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
 
-### Readable
+### Source (aka, Readable)
 
-The readable stream is just a `function(end, cb)`,
+The readable stream is just a `function read(end, cb)`,
 that may be called many times,
-and will (asynchronously) `callback(null, data)` once for each call.
+and will (asynchronously) `cb(null, data)` once for each call.
 
-The readable stream eventually `callback(err)` if there was an error, or `callback(true)`
-if the stream has no more data. In both cases a second argument will be irgnored. That is, the readable stream either provides data _or_ indicates an error or end-of-data condition, never both.
+To signify an end state, the stream eventually returns `cb(err)` or `cb(true)`.
+When indicating a terminal state, `data` *must* be ignored.
 
-if the user passes in `end = true`, then stop getting data from wherever.
-
-All [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
-and [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
-are readable streams.
+The `read` function *must not* be called until the previous call has called back.
+Unless, it is a call to abort the stream (`read(truthy, cb)`).
 
 ```js
+//a stream of 100 random numbers.
 var i = 100
-var randomReadable = pull.Source(function () {
+var random = function () {
   return function (end, cb) {
     if(end) return cb(end)
     //only read 100 times
     if(i-- < 0) return cb(true)
     cb(null, Math.random())
   }
-})
+}
+
 ```
 
-### Reader (aka, "writable")
+### Sink; (aka, Reader, "writable")
 
-A `reader`, is just a function that calls a readable,
-until it decideds to stop, or the readable `cb(err || true)`
+A sink is just a `reader` function that calls a Source (read function),
+until it decideds to stop, or the readable ends. `cb(err || true)`
 
 All [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
 and [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
 are reader streams.
 
 ```js
-var logger = pull.Sink(function (read) {
+//read source and log it.
+var logger = function (read) {
   read(null, function next(end, data) {
     if(end === true) return
     if(end) throw end
@@ -125,37 +93,43 @@ var logger = pull.Sink(function (read) {
     console.log(data)
     read(null, next)
   })
-})
+}
 ```
 
-These can be connected together by passing the `readable` to the `reader`
+Since these are just functions, you can pass them to each other!
 
 ```js
-logger()(randomReadable())
+var rand = random())
+var log = logger()
+
+log(rand) //"pipe" the streams.
+
 ```
 
-Or, if you prefer to read things left-to-right
+but, it's easier to read if you use's pull-stream's `pull` method
 
 ```js
-pull(randomReadable(), logger())
+var pull = require('pull-stream')
+
+pull(random(), logger())
 ```
 
-### Through / Duplex
+### Through
 
-A duplex/through stream is both a `reader` that is also `readable`
-
-A duplex/through stream is just a function that takes a `read` function,
+A through stream is a reader on one end and a readable on the other.
+It's Sink that returns a Source.
+That is, it's just a function that takes a `read` function,
 and returns another `read` function.
 
 ```js
-var map = pull.Through(function (read, map) {
+var map = function (read, map) {
   //return a readable function!
   return function (end, cb) {
     read(end, function (end, data) {
       cb(end, data != null ? map(data) : null)
     })
   }
-})
+}
 ```
 
 ### Pipeability
@@ -178,6 +152,10 @@ var tripleThrough =
 
 pull(source(), tripleThrough, sink())
 ```
+
+pull detects if it's missing a Source by checking function arity,
+if the function takes only one argument it's either a sink or a through.
+Otherwise it's a Source.
 
 ## Duplex Streams
 
