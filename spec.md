@@ -10,9 +10,9 @@ needs the sink to slow down, it may delay returning a read. If a sink needs the 
 
 For example, the Source Stream `fn(abort, cb)` may have an internal implementation that will read data from a disk or network. If `fn` is called with the first argument (`abort`) being truthy, the callback will be passed `abort` as it's first argument. The callback has three different argument configurations...
 
-  1. `cb(null, data)`, indicating there there is data.
-  2. `cb(true)`, indicating the stream should end.
-  3. `cb(error)`, indicating that there was an error.
+  1. `cb(null, data)`, indicates there there is data.
+  2. `cb(true)`, indicates the stream has ended normally.
+  3. `cb(error)`, indicates that there was an error.
 
 The read method *must not* be called until the previous call has returned, except for a call to abort the stream.
 
