@@ -2,14 +2,12 @@
 
 A Sink is a stream that is not readable.
 You *must* have a sink at the end of a pipeline
-for data to move through.
+for data to move towards.
 
 You can only use _one_ sink per pipeline.
 
 ``` js
-source()
-  .pipe(through()) //optional
-  .pipe(sink())
+pull(source, through, sink)
 ```
 
 See also:
