@@ -44,7 +44,7 @@ test('join through streams with pipe', function (t) {
 
   pull(
     read,
-    pull.writeArray(function (err, array) {
+    pull.collect(function (err, array) {
       console.log(array)
       t.deepEqual(
         array, 

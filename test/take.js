@@ -64,13 +64,13 @@ test('take 5 causes 5 reads upstream', function (t) {
   var reads = 0
   pull(
     pull.values([1,2,3,4,5,6,7,8,9,10]),
-    pull.Through(function (read) {
+    function (read) {
       return function (end, cb) {
         if (end !== true) reads++
         console.log(reads, end)
         read(end, cb)
       }
-    })(),
+    },
     pull.take(5),
     pull.collect(function (err, five) {
       t.deepEqual(five, [1,2,3,4,5])

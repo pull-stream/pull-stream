@@ -57,9 +57,7 @@ test('flatten stream of broken streams', function (t) {
   var _err = new Error('I am broken'), sosEnded
   pull(
     pull.values([
-      pull.Source(function read(abort, cb) {
-          cb(_err)  
-        })
+      pull.error(_err)
     ], function(err) {
       sosEnded = err;
     }),
