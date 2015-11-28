@@ -85,4 +85,7 @@ to know they'd have to give another callback to the source, this would
 get called very rarely so users would be inclined to not handle that.
 better to have one callback at the sink.)
 
-
+In some cases you may want the stream to continue, and just ignore
+an invalid line if it does not parse. An example where you definately
+want to abort if it's invalid would be an encrypted stream, which
+should be broken into chunks that are encrypted separately.
