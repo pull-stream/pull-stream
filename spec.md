@@ -5,12 +5,16 @@ In Pull-Streams, there are two fundamental types of streams `Source`s and `Sink`
 # Pull-Streams
 ## Source Streams
 
-A Source Stream (aka readable stream) is a async function that may be called repeatedly until it returns a terminal state. Pull-streams have back pressure, but it implicit instead of sending an explicit back pressure signal. If a source
+A Source Stream (aka readable stream) is a asynchronous function that may be called repeatedly until it returns a terminal state. Pull-streams have back pressure, but it is implicit instead of sending an explicit back pressure signal. If a source
 needs the sink to slow down, it may delay returning a read. If a sink needs the source to slow down, it just waits until it reads the source again.
 
-### Read
+For example, the Source Stream `fn(abort, cb)` may have an internal implementation that will read data from a disk or network. If `fn` is called with the first argument (`abort`) being truthy, the callback will be passed `abort` as it's first argument. The callback has three different argument configurations...
 
-A method, for example `read(null, cb(end|err))`, will read data from the stream zero or more times. The read method *must not* be called until the previous call has returned, except for a call to abort the stream.
+  1. `cb(null, data)`, indicates there there is data.
+  2. `cb(true)`, indicates the stream has ended normally.
+  3. `cb(error)`, indicates that there was an error.
+
+The read method *must not* be called until the previous call has returned, except for a call to abort the stream.
 
 ### End
 The stream may be terminated, for example `cb(err|end)`. The read method *must not* be called after it has terminated. As a normal stream end is propagated up the pipeline, an error should be propagated also, because it also means the end of the stream. If `cb(end=true)` that is a "end" which means it's a valid termination, if `cb(err)` that is an error.
