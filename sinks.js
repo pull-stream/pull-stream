@@ -6,7 +6,7 @@ function prop (key) {
   return (
     'string' == typeof key
     ? function (data) { return data[key] }
-    : 'object' === typeof key && 'function' === typeof key.exec //regexp
+    : key && 'object' === typeof key && 'function' === typeof key.exec //regexp
     ? function (data) { var v = map.exec(data); return v && v[0] }
     : key || id
   )
