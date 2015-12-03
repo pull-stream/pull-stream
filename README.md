@@ -85,14 +85,16 @@ are reader streams.
 
 ```js
 //read source and log it.
-var logger = function (read) {
-  read(null, function next(end, data) {
-    if(end === true) return
-    if(end) throw end
+var logger = function () {
+  return function (read) {
+    read(null, function next(end, data) {
+      if(end === true) return
+      if(end) throw end
 
-    console.log(data)
-    read(null, next)
-  })
+      console.log(data)
+      read(null, next)
+    })
+  }
 }
 ```
 
