@@ -99,7 +99,7 @@ var logger = function (read) {
 Since these are just functions, you can pass them to each other!
 
 ```js
-var rand = random())
+var rand = random()
 var log = logger()
 
 log(rand) //"pipe" the streams.
