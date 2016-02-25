@@ -50,9 +50,9 @@ var drain = exports.drain = function (op, done) {
       })()
   }
 
-  sink.abort = function (err) {
+  sink.abort = function (err, cb) {
     abort = err || true
-    if(read) return read(abort, function () {})
+    if(read) return read(abort, cb || function () {})
   }
 
   return sink
