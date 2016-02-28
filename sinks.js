@@ -51,6 +51,8 @@ var drain = exports.drain = function (op, done) {
   }
 
   sink.abort = function (err, cb) {
+    if('function' == typeof err)
+      cb = err, err = true
     abort = err || true
     if(read) return read(abort, cb || function () {})
   }
