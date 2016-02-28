@@ -1,6 +1,6 @@
 var pull = require('../')
-
-require('tape')('async-map', function (t) {
+var tape =  require('tape')
+tape('async-map', function (t) {
 
   pull(
     pull.count(),
@@ -14,8 +14,50 @@ require('tape')('async-map', function (t) {
       t.end()
     })
   )
+})
 
+tape('abort async map', function (t) {
+  var err = new Error('abort')
+  t.plan(2)
 
+  var read = pull(
+    pull.infinite(),
+    pull.asyncMap(function (data, cb) {
+      setImmediate(function () {
+        cb(null, data)
+      })
+    })
+  )
+
+  read(null, function (end) {
+    if(!end) throw new Error('expected read to end')
+    t.ok(end, "read's callback")
+  })
+
+  read(err, function (end) {
+    if(!end) throw new Error('expected abort to end')
+    t.ok(end, "Abort's callback")
+    t.end()
+  })
+
+})
+
+tape('asyncMap aborts when map errors', function (t) {
+  t.plan(2)
+  var ERR = new Error('abort')
+  pull(
+    pull.values([1,2,3], function (err) {
+      console.log('on abort')
+      t.equal(err, ERR, 'abort gets error')
+      t.end()
+    }),
+    pull.asyncMap(function (data, cb) {
+      cb(ERR)
+    }),
+    pull.collect(function (err) {
+      t.equal(err, ERR, 'collect gets error')
+    })
+  )
 })
 
 
