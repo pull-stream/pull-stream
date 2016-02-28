@@ -24,6 +24,7 @@ var sources = require('./sources')
 var sinks = require('./sinks')
 
 var map = exports.map =
+
 function (map) {
   if(!map) return id
   map = prop(map)
@@ -44,7 +45,47 @@ function (map) {
 }
 
 var asyncMap = exports.asyncMap =
-function (map) {
+function async (map) {
+  if(!map) return id
+  map = prop(map)
+  var busy = false, abortCb, aborted
+  return function (read) {
+    return function next (abort, cb) {
+      if(aborted) return cb(aborted)
+      if(abort) {
+        aborted = abort
+        if(!busy) read(abort, cb)
+        else read(abort, function () {
+          //if we are still busy, wait for the mapper to complete.
+          if(busy) abortCb = cb
+          else cb(abort)
+        })
+      }
+      else
+        read(null, function (end, data) {
+          if(end) {
+            cb(end)
+            if(abortCb) cb(end, data)
+          }
+          else {
+            busy = true
+            map(data, function (err, data) {
+              busy = false
+              if(aborted) {
+                cb(aborted)
+                abortCb(aborted)
+              }
+              else if(err) next (err, cb)
+              else cb(null, data)
+            })
+          }
+        })
+    }
+  }
+}
+
+
+function asyncMap (map) {
   if(!map) return id //when read is passed, pass it on.
   return function (read) {
     return function (end, cb) {
@@ -206,4 +247,9 @@ var flatten = exports.flatten = function () {
     }
   }
 }
+
+
+
+
+
 
