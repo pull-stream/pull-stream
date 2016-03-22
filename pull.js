@@ -1,7 +1,8 @@
 module.exports = function pull (a) {
   if (typeof a === 'function' && a.length === 1) {
+    var args = [].slice.call(arguments)
     return function (read) {
-      var args = [].slice.call(arguments)
+      args.unshift(read)
       return pull.apply(null, args)
     }
   }
@@ -26,3 +27,4 @@ module.exports = function pull (a) {
 
   return read
 }
+
