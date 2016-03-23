@@ -1,6 +1,9 @@
 module.exports = function pull (a) {
+  var length = arguments.length
   if (typeof a === 'function' && a.length === 1) {
-    var args = [].slice.call(arguments)
+    var args = new Array(length)
+    for(var i = 0; i < length; i++)
+      args[i] = arguments[i]
     return function (read) {
       args.unshift(read)
       return pull.apply(null, args)
@@ -8,14 +11,12 @@ module.exports = function pull (a) {
   }
 
   var read = a
-  var n = arguments.length
-  var i = 1
 
   if (read && typeof read.source === 'function') {
     read = read.source
   }
 
-  for (; i < n; i++) {
+  for (var i = 1; i < length; i++) {
     var s = arguments[i]
     if (typeof s === 'function') {
       read = s(read)
@@ -27,4 +28,8 @@ module.exports = function pull (a) {
 
   return read
 }
+
+
+
+
 
