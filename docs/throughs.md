@@ -9,9 +9,7 @@ Put through streams in-between [sources](https://github.com/dominictarr/pull-str
 like this:
 
 ```js
-source()
-  .pipe(through()) //optional
-  .pipe(sink())
+pull(source, through, sink)
 ```
 
 Also, if you don't have the source/sink yet,
@@ -75,22 +73,7 @@ If `opts.last` is set to true, the data for which the test failed will be includ
 
 If test is an integer, take n item from the source.
 
-## group (length)
-
-Group incoming data into arrays of max length `length`,
-(the last item may be shorter than `length`)
-
-Useful for data you can handle in batches.
-
 ## flatten ()
 
 Turn a stream of arrays into a stream of their items, (undoes group).
-
-## highWaterMark (n)
-
-An async buffering stream.
-
-`highWaterMark` will eagerly read from the source stream,
-while there are less than `n` chunks in the buffer.
-
 

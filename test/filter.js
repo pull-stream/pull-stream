@@ -10,7 +10,7 @@ test('filtered randomnes', function (t) {
       return d > 0.5
     }),
     pull.take(100),
-    pull.writeArray(function (err, array) {
+    pull.collect(function (err, array) {
       t.equal(array.length, 100)
       array.forEach(function (d) {
         t.ok(d > 0.5)
@@ -30,7 +30,7 @@ test('filter with regexp', function (t) {
     }),
     pull.filter(/^[^e]+$/i), //no E
     pull.take(37),
-    pull.writeArray(function (err, array) {
+    pull.collect(function (err, array) {
       t.equal(array.length, 37)
       console.log(array)
       array.forEach(function (d) {
@@ -42,19 +42,20 @@ test('filter with regexp', function (t) {
 })
 
 test('inverse filter with regexp', function (t) {
-  pull.infinite()
-    .pipe(pull.map(function (d) {
+  pull(
+    pull.infinite(),
+    pull.map(function (d) {
       return Math.round(d * 1000).toString(16)
-    }))
-    .pipe(pull.filterNot(/^[^e]+$/i)) //no E
-    .pipe(pull.take(37))
-    .pipe(pull.writeArray(function (err, array) {
+    }),
+    pull.filterNot(/^[^e]+$/i), //no E
+    pull.take(37),
+    pull.collect(function (err, array) {
       t.equal(array.length, 37)
-      console.log(array)
       array.forEach(function (d) {
         t.notEqual(d.indexOf('e'), -1)
       })
       t.end()
-    }))
+    })
+  )
 })
 

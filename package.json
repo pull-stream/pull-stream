@@ -1,18 +1,16 @@
 {
   "name": "pull-stream",
   "description": "minimal pull stream",
-  "version": "2.28.2",
+  "version": "3.2.3",
   "homepage": "https://github.com/dominictarr/pull-stream",
   "repository": {
     "type": "git",
     "url": "git://github.com/dominictarr/pull-stream.git"
   },
-  "dependencies": {
-    "pull-core": "~1.1.0"
-  },
   "devDependencies": {
-    "tape": "~2.12.3",
-    "pull-abortable": "~2.0.0"
+    "fastbench": "^1.0.1",
+    "pull-abortable": "~2.0.0",
+    "tape": "~2.12.3"
   },
   "scripts": {
     "test": "set -e; for t in test/*.js; do node $t; done"
