@@ -53,4 +53,71 @@ test('flatten stream of streams', function (t) {
 
 })
 
+test('flatten stream of broken streams', function (t) {
+  var _err = new Error('I am broken'), sosEnded
+  pull(
+    pull.values([
+      pull.error(_err)
+    ], function(err) {
+      sosEnded = err;
+    }),
+    pull.flatten(),
+    pull.onEnd(function (err) {
+      t.equal(err, _err)
+      process.nextTick(function() {
+        t.equal(sosEnded, null, 'should abort stream of streams')
+        t.end()
+      })
+    })
+  )
+})
+
+test('abort flatten', function (t) {
+  var sosEnded, s1Ended, s2Ended
+  var read = pull(
+    pull.values([
+      pull.values([1,2], function(err) {s1Ended = err}),
+      pull.values([3,4], function(err) {s2Ended = err}),
+    ], function(err) {
+      sosEnded = err;
+    }),
+    pull.flatten()
+  )
+  
+  read(null, function(err, data) {
+    t.notOk(err)
+    t.equal(data,1)
+    read(true, function(err, data) {
+      t.equal(err, true)
+      process.nextTick(function() {
+        t.equal(sosEnded, null, 'should abort stream of streams')
+        t.equal(s1Ended, null, 'should abort current nested stream')
+        t.equal(s2Ended, undefined, 'should not abort queued nested stream')
+        t.end()
+      })
+    })
+  })
+})
+
+test('abort flatten before 1st read', function (t) {
+  var sosEnded, s1Ended
+  var read = pull(
+    pull.values([
+      pull.values([1,2], function(err) {s1Ended = err})
+    ], function(err) {
+      sosEnded = err;
+    }),
+    pull.flatten()
+  )
+  
+  read(true, function(err, data) {
+    t.equal(err, true)
+    t.notOk(data)
+    process.nextTick(function() {
+      t.equal(sosEnded, null, 'should abort stream of streams')
+      t.equal(s1Ended, undefined, 'should abort current nested stream')
+      t.end()
+    })
+  })
+})
 

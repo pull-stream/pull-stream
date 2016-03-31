@@ -67,3 +67,14 @@ test('there can only be one', function (t) {
   )
 
 })
+
+test('find null', function (t) {
+  pull(
+    pull.values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    pull.find(null, function (err, first) {
+      t.equal(first, 1)
+      t.notOk(err)
+      t.end()
+    })
+  )
+})
