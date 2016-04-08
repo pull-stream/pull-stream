@@ -121,3 +121,15 @@ test('abort flatten before 1st read', function (t) {
   })
 })
 
+test('flattern handles stream with normal objects', function (t) {
+  pull(
+    pull.values([
+      [1,2,3], 4, [5,6,7], 8, 9 ,10
+    ]),
+    pull.flatten(),
+    pull.collect(function (err, ary) {
+      t.deepEqual(ary, [1,2,3,4,5,6,7,8,9,10])
+      t.end()
+    })
+  )
+})
