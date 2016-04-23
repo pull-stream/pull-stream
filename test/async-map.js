@@ -42,6 +42,36 @@ tape('abort async map', function (t) {
 
 })
 
+tape('abort async map (async source)', function (t) {
+  var err = new Error('abort')
+  t.plan(2)
+
+  var read = pull(
+    function(err, cb) {
+      setImmediate(function() {
+        if (err) return cb(err)
+        cb(null, 'x')
+      })
+    },
+    pull.asyncMap(function (data, cb) {
+      setImmediate(function () {
+        cb(null, data)
+      })
+    })
+  )
+
+  read(null, function (end) {
+    if(!end) throw new Error('expected read to end')
+    t.ok(end, "read's callback")
+  })
+
+  read(err, function (end) {
+    if(!end) throw new Error('expected abort to end')
+    t.ok(end, "Abort's callback")
+    t.end()
+  })
+
+})
 tape('asyncMap aborts when map errors', function (t) {
   t.plan(2)
   var ERR = new Error('abort')
