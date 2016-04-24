@@ -26,6 +26,8 @@ Sometimes it's the sink that errors, and if it can't read anymore then we _must_
 
 To abort the sink, call read with a truthy first argument. You may abort a source _before_ it has returned from a regular read. (if you wait for the previous read to complete, it's possible you'd get a deadlock, if you a reading a stream that takes a long time, example, `tail -f` is reading a file, but nothing has appended to that file yet).
 
+When a stream is aborted during a read, the callback provided to the read function *must* be called first, with an error, and then the abort callback.
+
 ## Sink Streams
 
 A Sink Stream (aka writable stream) is a function that a Source Stream is passed to. The Sink Stream calls the `read` function of the Source Stream, abiding by the rules about when it may not call. 
