@@ -63,12 +63,8 @@ function async (map) {
       }
       else
         read(null, function (end, data) {
-          if(end) {
-            cb(end)
-            if(abortCb) cb(end, data)
-          }
-          else if(aborted)
-            cb(aborted)
+          if(end) cb(end)
+          else if(aborted) cb(aborted)
           else {
             busy = true
             map(data, function (err, data) {
@@ -86,20 +82,6 @@ function async (map) {
   }
 }
 
-
-//function asyncMap (map) {
-//  if(!map) return id //when read is passed, pass it on.
-//  return function (read) {
-//    return function (end, cb) {
-//      if(end) return read(end, cb) //abort
-//      read(null, function (end, data) {
-//        if(end) return cb(end, data)
-//        map(data, cb)
-//      })
-//    }
-//  }
-//}
-//
 var filter = exports.filter =
 function (test) {
   //regexp
@@ -249,11 +231,4 @@ var flatten = exports.flatten = function () {
     }
   }
 }
-
-
-
-
-
-
-
 
