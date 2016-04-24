@@ -68,10 +68,9 @@ tape('abort async map (async source)', function (t) {
   read(err, function (end) {
     if(!end) throw new Error('expected abort to end')
     t.ok(end, "Abort's callback")
-    t.end()
   })
-
 })
+
 tape('asyncMap aborts when map errors', function (t) {
   t.plan(2)
   var ERR = new Error('abort')
