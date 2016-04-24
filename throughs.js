@@ -65,7 +65,7 @@ function async (map) {
         read(null, function (end, data) {
           if(end) {
             cb(end)
-            if(abortCb) cb(end, data)
+            if(abortCb) abortCb(end, data)
           }
           else {
             busy = true
@@ -73,7 +73,7 @@ function async (map) {
               busy = false
               if(aborted) {
                 cb(aborted)
-                abortCb(aborted)
+                if(abortCb) abortCb(aborted)
               }
               else if(err) next (err, cb)
               else cb(null, data)
