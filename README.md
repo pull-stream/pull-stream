@@ -10,6 +10,8 @@ In [new-classic-streams](
 `pull-stream` is a minimal take on streams,
 pull streams work great for "object" streams as well as streams of raw text or binary data.
 
+[![build status](https://secure.travis-ci.org/dominictarr/pull-stream.png)](http://travis-ci.org/dominictarr/pull-stream)
+
 
 ## Quick Example
 
