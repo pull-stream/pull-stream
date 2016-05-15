@@ -33,7 +33,7 @@ test('join through streams with pipe', function (t) {
 
   var read =
     pull(
-      pull.readArray(['billy', 'joe', 'zeke']),
+      pull.values(['billy', 'joe', 'zeke']),
       pipeline
     )
 
