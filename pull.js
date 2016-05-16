@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = function pull (a) {
   var length = arguments.length
   if (typeof a === 'function' && a.length === 1) {
