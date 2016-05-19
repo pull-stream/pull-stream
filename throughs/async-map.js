@@ -1,6 +1,6 @@
 'use strict'
 
-var id = require('../util/id')
+function id (e) { return e }
 var prop = require('../util/prop')
 
 module.exports = function asyncMap (map) {
@@ -39,4 +39,5 @@ module.exports = function asyncMap (map) {
     }
   }
 }
+
 

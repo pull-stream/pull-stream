@@ -1,6 +1,6 @@
 'use strict'
 
-var id = require('../util/id')
+function id (e) { return e }
 var prop = require('../util/prop')
 var filter = require('./filter')
 
@@ -15,3 +15,4 @@ module.exports = function unique (field, invert) {
     return !invert //true by default
   })
 }
+
