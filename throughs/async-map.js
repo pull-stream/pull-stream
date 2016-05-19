@@ -1,7 +1,7 @@
 'use strict'
 
-var id = require('./util/id')
-var prop = require('./util/prop')
+var id = require('../util/id')
+var prop = require('../util/prop')
 
 module.exports = function asyncMap (map) {
   if(!map) return id

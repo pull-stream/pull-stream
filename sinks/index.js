@@ -2,7 +2,7 @@
 
 module.exports = {
   drain: require('./drain'),
-  onEnd: require('./onEnd'),
+  onEnd: require('./on-end'),
   log: require('./log'),
   find: require('./find'),
   reduce: require('./reduce'),

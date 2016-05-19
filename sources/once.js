@@ -1,4 +1,4 @@
-var abortCb = require('./util/abortCb')
+var abortCb = require('../util/abort-cb')
 
 module.exports = function once (value, onAbort) {
   return function (abort, cb) {

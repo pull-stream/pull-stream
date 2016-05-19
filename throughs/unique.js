@@ -1,7 +1,7 @@
 'use strict'
 
-var id = require('./util/id')
-var prop = require('./util/prop')
+var id = require('../util/id')
+var prop = require('../util/prop')
 var filter = require('./filter')
 
 //drop items you have already seen.

@@ -1,6 +1,6 @@
 'use strict'
 
-var prop = require('./util/prop')
+var prop = require('../util/prop')
 
 module.exports = function map (mapper) {
   if(!mapper) return id

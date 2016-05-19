@@ -1,7 +1,7 @@
 'use strict'
 
-var values = require('./values')
-var once = require('./once')
+var values = require('../sources/values')
+var once = require('../sources/once')
 
 //convert a stream of arrays or streams into just a stream.
 module.exports = function flatten () {

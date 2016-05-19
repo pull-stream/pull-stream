@@ -1,7 +1,7 @@
 'use strict'
 
-var id = require('./util/id')
-var prop = require('./util/prop')
+var id = require('../util/id')
+var prop = require('../util/prop')
 var drain = require('./drain')
 
 module.exports = function find (test, cb) {
@@ -22,4 +22,6 @@ module.exports = function find (test, cb) {
     cb(err === true ? null : err, null)
   })
 }
+
+
 

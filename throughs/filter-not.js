@@ -1,6 +1,6 @@
 'use strict'
 
-var tester = require('./util/tester')
+var tester = require('../util/tester')
 var filter = require('./filter')
 
 module.exports = function filterNot (test) {

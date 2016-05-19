@@ -1,6 +1,6 @@
 'use strict'
 
-var tester = require('./util/tester')
+var tester = require('../util/tester')
 
 module.exports = function filter (test) {
   //regexp
