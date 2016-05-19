@@ -1,3 +1,4 @@
+'use strict'
 module.exports = function infinite (generate) {
   generate = generate || Math.random
   return function (end, cb) {

@@ -1,3 +1,4 @@
+'use strict'
 var abortCb = require('../util/abort-cb')
 
 module.exports = function once (value, onAbort) {

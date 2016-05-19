@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = function count (max) {
   var i = 0; max = max || Infinity
   return function (end, cb) {
