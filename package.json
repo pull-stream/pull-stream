@@ -1,7 +1,7 @@
 {
   "name": "pull-stream",
   "description": "minimal pull stream",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "homepage": "https://github.com/dominictarr/pull-stream",
   "repository": {
     "type": "git",
@@ -18,3 +18,5 @@
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"
 }
+
+

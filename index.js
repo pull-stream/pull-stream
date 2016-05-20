@@ -1,3 +1,5 @@
+'use strict'
+
 var sources  = require('./sources')
 var sinks    = require('./sinks')
 var throughs = require('./throughs')
