@@ -288,6 +288,29 @@ In none of the above cases data is flowing!
 There either is data flowing (4) OR you have the error/abort cases (1-3), never both.
 
 
+## 1:1 read-callback ratio
+
+A pull stream source (and thus transform) returns *exactly one value* per read.
+
+This differs from node streams, which can use `this.push(value)` and in internal
+buffer to create transforms that write many values from a single read value.
+
+Pull streams don't come with their own buffering mechanism, but [there are ways
+to get around this](https://github.com/dominictarr/pull-stream-examples/blob/master/buffering.js).
+
+
+## Further Examples
+
+- https://github.com/dominictarr/pull-stream-examples
+- https://github.com/pull-stream/pull-stream/blob/master/examples.md
+
+Explore this repo further for more information about
+[sources](https://github.com/pull-stream/pull-stream/tree/master/sources),
+[throughs](https://github.com/pull-stream/pull-stream/tree/master/throughs),
+[sinks](https://github.com/pull-stream/pull-stream/tree/master/sinks), and
+[more](https://github.com/pull-stream/pull-stream/tree/master/docs).
+
+
 ## License
 
 MIT
