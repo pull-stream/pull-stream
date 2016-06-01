@@ -27,8 +27,14 @@ pull(
 ```
 note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
 
-The best thing about pull-stream is that it can be completely lazy.
-This is perfect for async traversals where you might want to stop early.
+to grok how pull-streams work, read through [pull-streams by example](https://github.com/dominictarr/pull-stream-examples)
+
+## How do I do X with pull-streams?
+
+There is a module for that!
+
+Check the [pull-stream FAQ](https://github.com/pull-stream/pull-stream-faq)
+and post an issue if you have a question that is not on that.
 
 ## Compatibily with node streams
 
@@ -36,7 +42,7 @@ pull-streams are not _directly_ compatible with node streams,
 but pull-streams can be converted into node streams with
 [pull-stream-to-stream](https://github.com/dominictarr/pull-stream-to-stream)
 and node streams can be converted into pull-stream using [stream-to-pull-stream](https://github.com/dominictarr/stream-to-pull-stream)
-
+correct back pressure is preserved.
 
 ### Readable & Reader vs. Readable & Writable
 
@@ -314,3 +320,4 @@ Explore this repo further for more information about
 ## License
 
 MIT
+
