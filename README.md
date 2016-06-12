@@ -45,9 +45,9 @@ Instead of a readable stream, and a writable stream, there is a `readable` strea
 is a Sink that returns a Source.
 
 See also:
-* [Sources](https://github.com/dominictarr/pull-stream/blob/master/docs/sources.md)
-* [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
-* [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
+* [Sources](./sources/index.md)
+* [Throughs](./throughs/index.md)
+* [Sinks](./sinks/index.md)
 
 ### Source (aka, Readable)
 
@@ -80,8 +80,8 @@ var random = function () {
 A sink is just a `reader` function that calls a Source (read function),
 until it decideds to stop, or the readable ends. `cb(err || true)`
 
-All [Throughs](https://github.com/dominictarr/pull-stream/blob/master/docs/throughs.md)
-and [Sinks](https://github.com/dominictarr/pull-stream/blob/master/docs/sinks.md)
+All [Throughs](./throughs/index.md)
+and [Sinks](./sinks/index.md)
 are reader streams.
 
 ```js
@@ -305,10 +305,10 @@ to get around this](https://github.com/dominictarr/pull-stream-examples/blob/mas
 - https://github.com/pull-stream/pull-stream/blob/master/examples.md
 
 Explore this repo further for more information about
-[sources](https://github.com/pull-stream/pull-stream/tree/master/sources),
-[throughs](https://github.com/pull-stream/pull-stream/tree/master/throughs),
-[sinks](https://github.com/pull-stream/pull-stream/tree/master/sinks), and
-[more](https://github.com/pull-stream/pull-stream/tree/master/docs).
+[sources](./sources/index.md),
+[throughs](./throughs/index.md),
+[sinks](./sinks/index.md), and
+[glossary](./glossary.md).
 
 
 ## License
