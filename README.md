@@ -45,9 +45,9 @@ Instead of a readable stream, and a writable stream, there is a `readable` strea
 is a Sink that returns a Source.
 
 See also:
-* [Sources](./sources/index.md)
-* [Throughs](./throughs/index.md)
-* [Sinks](./sinks/index.md)
+* [Sources](./docs/sources/index.md)
+* [Throughs](./docs/throughs/index.md)
+* [Sinks](./docs/sinks/index.md)
 
 ### Source (aka, Readable)
 
@@ -80,8 +80,8 @@ var random = function () {
 A sink is just a `reader` function that calls a Source (read function),
 until it decideds to stop, or the readable ends. `cb(err || true)`
 
-All [Throughs](./throughs/index.md)
-and [Sinks](./sinks/index.md)
+All [Throughs](./docs/throughs/index.md)
+and [Sinks](./docs/sinks/index.md)
 are reader streams.
 
 ```js
@@ -301,14 +301,14 @@ to get around this](https://github.com/dominictarr/pull-stream-examples/blob/mas
 
 ## Further Examples
 
-- https://github.com/dominictarr/pull-stream-examples
-- https://github.com/pull-stream/pull-stream/blob/master/examples.md
+- [dominictarr/pull-stream-examples](https://github.com/dominictarr/pull-stream-examples)
+- [./docs/examples](./docs/examples.md)
 
 Explore this repo further for more information about
-[sources](./sources/index.md),
-[throughs](./throughs/index.md),
-[sinks](./sinks/index.md), and
-[glossary](./glossary.md).
+[sources](./docs/sources/index.md),
+[throughs](./docs/throughs/index.md),
+[sinks](./docs/sinks/index.md), and
+[glossary](./docs/glossary.md).
 
 
 ## License

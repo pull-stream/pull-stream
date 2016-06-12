@@ -1,4 +1,4 @@
-# pull-stream/throughs/nonUnique
+# pull-stream/throughs/non-unique
 
 ## usage
 

@@ -1,4 +1,4 @@
-# pull-stream/throughs/filterNot
+# pull-stream/throughs/filter-not
 
 ## usage
 
