@@ -5,7 +5,7 @@
   "homepage": "https://pull-stream.github.io",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/pull-stream.git"
+    "url": "git://github.com/pull-stream/pull-stream.git"
   },
   "devDependencies": {
     "fastbench": "^1.0.1",
