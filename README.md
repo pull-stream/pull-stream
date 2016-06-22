@@ -68,13 +68,12 @@ The `read` function *must not* be called until the previous call has called back
 Unless, it is a call to abort the stream (`read(truthy, cb)`).
 
 ```js
-//a stream of 100 random numbers.
-var random = function () {
-  var i = 100
+//a stream of random numbers.
+function random (n) {
   return function (end, cb) {
     if(end) return cb(end)
-    //only read 100 times
-    if(i-- < 0) return cb(true)
+    //only read n times, then stop.
+    if(0<--n) return cb(true)
     cb(null, Math.random())
   }
 }
@@ -92,7 +91,7 @@ are reader streams.
 
 ```js
 //read source and log it.
-var logger = function () {
+function logger () {
   return function (read) {
     read(null, function next(end, data) {
       if(end === true) return
@@ -108,7 +107,7 @@ var logger = function () {
 Since these are just functions, you can pass them to each other!
 
 ```js
-var rand = random()
+var rand = random(100)
 var log = logger()
 
 log(rand) //"pipe" the streams.
@@ -131,7 +130,7 @@ That is, it's just a function that takes a `read` function,
 and returns another `read` function.
 
 ```js
-var map = function (read, map) {
+function map (read, map) {
   //return a readable function!
   return function (end, cb) {
     read(end, function (end, data) {
@@ -320,4 +319,5 @@ Explore this repo further for more information about
 ## License
 
 MIT
+
 
