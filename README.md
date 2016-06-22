@@ -69,8 +69,8 @@ Unless, it is a call to abort the stream (`read(truthy, cb)`).
 
 ```js
 //a stream of 100 random numbers.
-var i = 100
 var random = function () {
+  var i = 100
   return function (end, cb) {
     if(end) return cb(end)
     //only read 100 times
