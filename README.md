@@ -73,7 +73,7 @@ function random (n) {
   return function (end, cb) {
     if(end) return cb(end)
     //only read n times, then stop.
-    if(0<--n) return cb(true)
+    if(0>--n) return cb(true)
     cb(null, Math.random())
   }
 }
