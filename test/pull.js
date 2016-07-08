@@ -4,8 +4,7 @@ function curry (fun) {
   return function () {
     var args = [].slice.call(arguments)
     return function (read) {
-      args.unshift(read)
-      return fun.apply(null, args)
+      return fun.apply(null, [read].concat(args))
     }
   }
 }
@@ -95,3 +94,20 @@ tape('turn pull(through,...) -> Through', function (t) {
 //  )
 //
 
+tape("writable pull() should throw when called twice", function (t) {
+  t.plan(2)
+
+  var stream = pull(
+    map(function (e) { return e*e }),
+    sum(function (err, value) {
+      console.log(value)
+      t.equal(value, 385)
+    })
+  )
+
+  stream(values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+
+  t.throws(function () {
+    stream(values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+  }, TypeError)
+})

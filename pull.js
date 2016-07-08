@@ -7,8 +7,25 @@ module.exports = function pull (a) {
     for(var i = 0; i < length; i++)
       args[i] = arguments[i]
     return function (read) {
-      args.unshift(read)
-      return pull.apply(null, args)
+      if (args == null) {
+        throw new TypeError("partial sink should only be called once!")
+      }
+
+      // Grab the reference after the check, because it's always an array now
+      // (engines like that kind of consistency).
+      var ref = args
+      args = null
+
+      // Prioritize common case of small number of pulls.
+      switch (length) {
+      case 1: return pull(read, ref[0])
+      case 2: return pull(read, ref[0], ref[1])
+      case 3: return pull(read, ref[0], ref[1], ref[2])
+      case 4: return pull(read, ref[0], ref[1], ref[2], ref[3])
+      default:
+        ref.unshift(read)
+        return pull.apply(null, ref)
+      }
     }
   }
 
@@ -30,8 +47,3 @@ module.exports = function pull (a) {
 
   return read
 }
-
-
-
-
-
