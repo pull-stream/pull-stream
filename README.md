@@ -9,7 +9,7 @@ data is pulled out of the source stream, into the destination.
 `pull-stream` is a minimal take on streams,
 pull streams work great for "object" streams as well as streams of raw text or binary data.
 
-[![build status](https://secure.travis-ci.org/dominictarr/pull-stream.png)](http://travis-ci.org/dominictarr/pull-stream)
+[![build status](https://secure.travis-ci.org/pull-stream/pull-stream.png)](https://travis-ci.org/pull-stream/pull-stream)
 
 
 ## Quick Example
