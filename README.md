@@ -304,6 +304,20 @@ Pull streams don't come with their own buffering mechanism, but [there are ways
 to get around this](https://github.com/dominictarr/pull-stream-examples/blob/master/buffering.js).
 
 
+## Minimal bundle
+
+If you need only the `pull` function from this package you can reduce the size
+of the imported code (for instance to reduce a Browserify bundle) by requiring
+it directly:
+
+
+```js
+var pull = require('pull-stream/pull')
+
+pull(random(), logger())
+```
+
+
 ## Further Examples
 
 - [dominictarr/pull-stream-examples](https://github.com/dominictarr/pull-stream-examples)
