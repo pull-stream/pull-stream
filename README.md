@@ -40,8 +40,8 @@ and post an issue if you have a question that is not on that.
 
 pull-streams are not _directly_ compatible with node streams,
 but pull-streams can be converted into node streams with
-[pull-stream-to-stream](https://github.com/dominictarr/pull-stream-to-stream)
-and node streams can be converted into pull-stream using [stream-to-pull-stream](https://github.com/dominictarr/stream-to-pull-stream)
+[pull-stream-to-stream](https://github.com/pull-stream/pull-stream-to-stream)
+and node streams can be converted into pull-stream using [stream-to-pull-stream](https://github.com/pull-stream/stream-to-pull-stream)
 correct back pressure is preserved.
 
 ### Readable & Reader vs. Readable & Writable
