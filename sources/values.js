@@ -15,7 +15,9 @@ module.exports = function values (array, onAbort) {
   return function (abort, cb) {
     if(abort)
       return abortCb(cb, abort, onAbort)
-    cb(i >= array.length || null, array[i++])
+    if(i >= array.length)
+      cb(true)
+    else
+      cb(null, array[i++])
   }
 }
-
