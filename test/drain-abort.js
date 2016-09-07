@@ -29,7 +29,8 @@ tape('abort on drain - async', function (t) {
   var drain = pull.drain(function () {
     if(c < 0) throw new Error('stream should have aborted')
     if(!--c) return drain.abort()
-  }, function () {
+  }, function (err) {
+    t.equal(err, null)
     t.end()
   })
 
@@ -43,7 +44,8 @@ tape('abort on drain - sync', function (t) {
   var drain = pull.drain(function () {
     if(c < 0) throw new Error('stream should have aborted')
     if(!--c) return drain.abort()
-  }, function () {
+  }, function (err) {
+    t.equal(err, null)
     t.end()
   })
 
@@ -70,6 +72,7 @@ tape('abort on drain - async, out of cb', function (t) {
   }, 100)
 
 })
+
 
 
 
