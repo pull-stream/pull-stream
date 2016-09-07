@@ -3,6 +3,12 @@
 module.exports = function drain (op, done) {
   var read, abort
 
+  function _done (err) {
+    if(done) done(err === true ? null : err)
+    else if(err && err !== true)
+      throw err
+  }
+
   function sink (_read) {
     read = _read
     if(abort) return sink.abort()
@@ -13,17 +19,18 @@ module.exports = function drain (op, done) {
         var loop = true, cbed = false
         while(loop) {
           cbed = false
-          read(null, function (end, data) {
+          read(null, function again (end, data) {
             cbed = true
             if(end = end || abort) {
               loop = false
-              if(done) done(end === true ? null : end)
-              else if(end && end !== true)
-                throw end
+              _done(end)
             }
-            else if(op && false === op(data) || abort) {
+            else if(op && false === op(data)) {
               loop = false
-              read(abort || true, done || function () {})
+              //very narrow edgecase: to get here you must call sink.abort
+              //AND return false from op.
+              if(abort) return _done(true)
+              read( true, _done)
             }
             else if(!loop){
               next()
@@ -41,8 +48,21 @@ module.exports = function drain (op, done) {
     if('function' == typeof err)
       cb = err, err = true
     abort = err || true
-    if(read) return read(abort, cb || function () {})
+    if(read) return read(abort, function (end) {
+      cb && cb(end === true ? null : end)
+    })
   }
 
   return sink
 }
+
+
+
+
+
+
+
+
+
+
+
