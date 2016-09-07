@@ -74,7 +74,42 @@ tape('abort on drain - async, out of cb', function (t) {
 })
 
 
+tape('abort while inside op', function (t) {
 
+  var n = 0
+  var drain
+  pull(
+    pull.values([1,2,3,4,5]),
+    drain = pull.drain(function (n) {
+      t.equal(n, 1)
+      drain.abort(function (err) {
+        t.notOk(err)
+      })
+    }, function (err) {
+      t.equal(err, null)
+      t.end()
 
+    })
+  )
+})
 
+tape('abort while inside op AND return false', function (t) {
+
+  var n = 0
+  var drain
+  pull(
+    pull.values([1,2,3,4,5]),
+    drain = pull.drain(function (n) {
+      t.equal(n, 1)
+      drain.abort(function (err) {
+        t.notOk(err)
+      })
+      return false
+    }, function (err) {
+      t.equal(err, null)
+      t.end()
+
+    })
+  )
+})
 
