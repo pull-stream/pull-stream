@@ -6,4 +6,4 @@
 
 ### `flatten()`
 
-Turn a stream of arrays into a stream of their items, (undoes group).
+Turn a stream of streams or a stream of arrays into a stream of their items, (undoes group).
