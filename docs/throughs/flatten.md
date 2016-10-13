@@ -1,6 +1,10 @@
 # pull-stream/throughs/flatten
 
-`flatten = require('pull-stream/throughs/flatten')`
+## usage
+### `flatten = require('pull-stream/throughs/flatten')`
+### `flatten(streams)`
+Turn a stream of streams or a stream of arrays into a stream of their items, (undoes group).
+
 
 ## example
 ```js
@@ -36,9 +40,3 @@ test('flatten stream of streams', function (t) {
 
 })
 ```
-
-## usage
-
-### `flatten(streams)`
-
-Turn a stream of streams or a stream of arrays into a stream of their items, (undoes group).
