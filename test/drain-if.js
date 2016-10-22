@@ -12,6 +12,16 @@ test('reduce becomes through', function (t) {
   )
 })
 
+test('reduce without initial value', function (t) {
+  pull(
+    pull.values([1,2,3]),
+    pull.reduce(function (a, b) {return a + b}, function (err, val) {
+      t.equal(val, 6)
+      t.end()
+    })
+  )
+})
+
 
 test('reduce becomes drain', function (t) {
   pull(
