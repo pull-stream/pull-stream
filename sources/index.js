@@ -3,6 +3,7 @@ module.exports = {
   keys: require('./keys'),
   once: require('./once'),
   values: require('./values'),
+  asyncValues: require('./async-values'),
   count: require('./count'),
   infinite: require('./infinite'),
   empty: require('./empty'),
