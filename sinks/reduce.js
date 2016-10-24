@@ -2,17 +2,14 @@
 
 var drain = require('./drain')
 
-module.exports = function reduce (/* reducer, acc, cb */) {
-  var reducer = arguments[0]
-  var acc
-  var cb
+module.exports = function reduce (reducer, acc, cb ) {
+  if(!cb) cb = acc, acc = null
   var sink = drain(function (data) {
     acc = reducer(acc, data)
   }, function (err) {
     cb(err, acc)
   })
-  if (arguments.length === 2) {
-    cb = arguments[2]
+  if (arguments.length === 2)
     return function (source) {
       source(null, function (end, data) {
         //if ended immediately, and no initial...
@@ -20,9 +17,6 @@ module.exports = function reduce (/* reducer, acc, cb */) {
         acc = data; sink(source)
       })
     }
-  } else {
-    acc = arguments[1]
-    cb = arguments[2]
+  else
     return sink
-  }
 }
