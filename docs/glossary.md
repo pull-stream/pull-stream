@@ -28,7 +28,11 @@ The first stream in the pipeline. The Source is not writable.
 
 ## Sink
 
-The last Stream in the pipeline. The Sink is not readable.
+The last stream in the pipeline. The Sink is not readable.
+
+## Through
+
+The stream (or streams) in the middle of the pipeline, between your source and sink.  A through is readable and writable.
 
 ## Push vs Pull
 
