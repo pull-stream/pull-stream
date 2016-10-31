@@ -22,13 +22,17 @@ to do it.
 Eager means to do something early, so you have it ready
 immediately when you need it.
 
-## Source
+## [Source](sources/index.md)
 
-The first stream in the pipeline. The Source is not writable.
+The first stream in the pipeline. The Source is not a reader (not writable).
 
-## Sink
+## [Sink](sinks/index.md)
 
-The last Stream in the pipeline. The Sink is not readable.
+The last stream in the pipeline. The Sink is not readable.
+
+## [Through](throughs/index.md)
+
+The stream (or streams) in the middle of the pipeline, between your source and sink.  A through is a reader and readable.
 
 ## Push vs Pull
 
