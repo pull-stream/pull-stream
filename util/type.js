@@ -2,8 +2,8 @@ function abort (err, cb) { return cb(true) }
 
 module.exports = function type (stream) {
   // Test if it is a through first.
-  // If it is a sink, calling it will break.
-  // So we wrap a try/catch
+  // If a source, calling it like this will break.
+  // So we wrap a try/catch:
   try {
     if (typeof stream(abort) !== 'undefined') return 'through'
   } catch (e) {}
