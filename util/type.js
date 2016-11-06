@@ -1,5 +1,3 @@
-function noop () {}
-
 function abort (err, cb) { return cb(true) }
 
 module.exports = function type (stream) {
