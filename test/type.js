@@ -3,7 +3,7 @@ var pull = require('../')
 var type = require('../type')
 
 test('util - type', function (t) {
-  t.plan(6)
+  t.plan(4)
 
   t.is(type(pull.values()), 'source', 'type of pull.values()')
   t.is(type(pull.once()), 'source', 'type of pull.once()')
