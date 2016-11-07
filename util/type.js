@@ -5,7 +5,8 @@ module.exports = function type (stream) {
   // If a source, calling it like this will break.
   // So we wrap a try/catch:
   try {
-    if (typeof stream(abort) !== 'undefined') return 'through'
+    var source = stream(abort)
+    if (typeof source === 'function' && source.length === 2) return 'through'
   } catch (e) {}
 
   // Test other streams, and otherwise null.
