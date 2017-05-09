@@ -6,6 +6,8 @@ var throughs = require('./throughs')
 
 exports = module.exports = require('./pull')
 
+exports.pull = exports
+
 for(var k in sources)
   exports[k] = sources[k]
 
