@@ -43,6 +43,11 @@ module.exports = function pull (a) {
       s.sink(read)
       read = s.source
     }
+    if (read && read.length === 1) {
+      return function continuable (cb) {
+        return read(cb)
+      }
+    }
   }
 
   return read
