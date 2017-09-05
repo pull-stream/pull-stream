@@ -9,7 +9,8 @@ module.exports = {
   take: require('./take'),
   unique: require('./unique'),
   nonUnique: require('./non-unique'),
-  flatten: require('./flatten')
+  flatten: require('./flatten'),
+  skip: require('./skip')
 }
 
 
