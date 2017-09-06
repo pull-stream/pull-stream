@@ -29,14 +29,14 @@ and you must design your system to recover if the download
 fails. (For example if the wifi were to cut out).
 
 The read stream is just the http download, and the sink
-writes it to a tempory file. If the source ends normally,
-the tempory file is moved to the correct location.
-If the source errors, the tempory file is deleted.
+writes it to a temporary file. If the source ends normally,
+the temporary file is moved to the correct location.
+If the source errors, the temporary file is deleted.
 
 (You could also write the file to the correct location,
-and delete it if it errors, but the tempory file method has the advantage
-that if the computer or process crashes it leaves only a tempory file
-and not a file that appears valid. Stray tempory files can be cleaned up
+and delete it if it errors, but the temporary file method has the advantage
+that if the computer or process crashes it leaves only a temporary file
+and not a file that appears valid. Stray temporary files can be cleaned up
 or resumed when the process restarts.)
 
 # A sink that may fail
@@ -87,6 +87,6 @@ Therefore, as it is better to have one callback at the sink, wait until the sour
 has finished cleaning up before callingback to the pink with an error.)
 
 In some cases you may want the stream to continue, and the the through stream can just ignore
-an any linesthat do not parse. An example where you definately
+an any lines that do not parse. An example where you definately
 want a through stream to abort on invalid input would be an encrypted stream, which
 should be broken into chunks that are encrypted separately.
