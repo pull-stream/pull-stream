@@ -72,6 +72,43 @@ pull(a, b, a)
 //"pull from a to b and then back to a"
 ```
 
+## Continuable
+
+[Continuables](https://github.com/Raynos/continuable) let you defer a stream and handle the completion of the sink stream.  For example:
+
+```js
+var cont = pull(...streams, sink)
+
+// ...
+
+cont(function (err) {
+  // stream finished
+})
+```
+
+Or call beside it if you are not deferring:
+
+```js
+pull(...streams, sink)(function (err) {
+  // stream finished
+})
+```
+
+They are created by making a sink stream return a continuable, which uses it's callback and reads:
+
+```js
+function sink (read) {
+  return function continuable (done) {
+    // Do reads and eventually call `done`
+    read(null, function (end, data) {
+      if (end === true) return done(null)
+      if (end) return done(end)
+      // ... otherwise use `data`
+    })
+  }
+}
+```
+
 ## API
 
 ```js
