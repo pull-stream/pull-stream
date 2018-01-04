@@ -20,7 +20,7 @@ const run = bench([
       setImmediate(done)
     })
     pull(source, through, sink)
-  },
+  }/*,
   function pull_compose (done) {
     const source = pull.values(values)
     const through = pull.asyncMap(function (val, done) {
@@ -46,8 +46,12 @@ const run = bench([
       setImmediate(done)
     })
     pull(pull(source, through), sink)
-  }
-], 100000)
+  }*/
+], N=100000)
 
-run()
+var heap = process.memoryUsage().heapUsed
+run(function () {
+  console.log((process.memoryUsage().heapUsed - heap)/N)
+})
+
 
