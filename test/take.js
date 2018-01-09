@@ -117,4 +117,48 @@ test("take doesn't abort until the last read", function (t) {
 
 })
 
+test('take when abort on the first message', function (t) {
+
+  var read = pull(
+    function (err, cb) {
+      t.ok(err)
+      cb(err)
+    },
+    pull.take(5)
+  )
+
+  read(true, function (err) {
+    t.ok(err)
+    t.end()
+  })
+
+})
+
+
+
+test('take when abort on the first message', function (t) {
+
+  var cbs = []
+
+  var read = pull(
+    function (err, cb) {
+      cbs.push(cb)
+    },
+    pull.take(5)
+  )
+
+  read(null, function () {
+
+  })
+
+  read(true, function (err) {
+    t.ok(err)
+    t.end()
+  })
+
+  t.equal(cbs.length, 2)
+
+  var abort_cb = cbs.pop()
+  abort_cb(true)
+})
 
