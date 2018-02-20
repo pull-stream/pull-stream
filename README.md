@@ -82,7 +82,7 @@ function random (n) {
 
 ### Sink (reader or writable stream that consumes values)
 
-A Sink is a function `reader(read)` that calls a Source (`read(null, cb`),
+A Sink is a function `reader(read)` that calls a Source (`read(null, cb)`),
 until it decides to stop (by calling `read(true, cb)`), or the readable ends (`read` calls
 `cb(Error || true)`
 
