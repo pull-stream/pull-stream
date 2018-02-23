@@ -68,15 +68,16 @@ The `read` function *must not* be called until the previous call has called back
 Unless, it is a call to abort the stream (`read(truthy, cb)`).
 
 ```js
-//a stream of random numbers.
-function random (n) {
-  return function (end, cb) {
-    if(end) return cb(end)
-    //only read n times, then stop.
-    if(0>--n) return cb(true)
-    cb(null, Math.random())
-  }
+var n = 5;
+
+// random is a source 5 of random numbers.
+function random (end, cb) {
+  if(end) return cb(end)
+  // only read n times, then stop.
+  if(0 > --n) return cb(true)
+  cb(null, Math.random())
 }
+
 
 ```
 
@@ -90,27 +91,22 @@ and [Sinks](./docs/sinks/index.md)
 are reader streams.
 
 ```js
-//read source and log it.
-function logger () {
-  return function (read) {
-    read(null, function next(end, data) {
-      if(end === true) return
-      if(end) throw end
+// logger reads a source and logs it.
+function logger (read) {
+  read(null, function next(end, data) {
+    if(end === true) return
+    if(end) throw end
 
-      console.log(data)
-      read(null, next)
-    })
-  }
+    console.log(data)
+    read(null, next)
+  })
 }
 ```
 
 Since these are just functions, you can pass them to each other!
 
 ```js
-var rand = random(100)
-var log = logger()
-
-log(rand) //"pipe" the streams.
+logger(random) //"pipe" the streams.
 
 ```
 
@@ -119,7 +115,7 @@ but, it's easier to read if you use's pull-stream's `pull` method
 ```js
 var pull = require('pull-stream')
 
-pull(random(), logger())
+pull(random, logger)
 ```
 
 ### Through
@@ -130,14 +126,16 @@ That is, it's just a function that takes a `read` function,
 and returns another `read` function.
 
 ```js
-function map (read, map) {
-  //return a readable function!
-  return function (end, cb) {
+// double is a through stream that doubles values.
+function double (read) {
+  return function readable (end, cb) {
     read(end, function (end, data) {
-      cb(end, data != null ? map(data) : null)
+      cb(end, data != null ? data * 2 : null)
     })
   }
 }
+
+pull(random, double, logger)
 ```
 
 ### Pipeability
@@ -156,7 +154,7 @@ and if you pull together through streams, it gives you a new through stream.
 ```js
 var tripleThrough =
   pull(through1(), through2(), through3())
-//THE THREE THROUGHS BECOME ONE
+// The three through streams become one.
 
 pull(source(), tripleThrough, sink())
 ```
