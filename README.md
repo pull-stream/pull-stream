@@ -78,7 +78,6 @@ function random (end, cb) {
   cb(null, Math.random())
 }
 
-
 ```
 
 ### Sink; (aka, Reader, "writable")
