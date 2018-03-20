@@ -117,4 +117,24 @@ test("take doesn't abort until the last read", function (t) {
 
 })
 
-
+test('take should throw error on last read', function (t) {
+  var i = 0
+  var error = new Error('error on last call')
+  
+  pull(
+    pull.values([1,2,3,4,5,6,7,8,9,10]),
+    pull.take(function(n) {return n<5}, {last: true}),
+    // pull.take(5),
+    pull.asyncMap((data, cb) => {
+      setTimeout(() => {
+        if(++i < 5) cb(null, data)
+        else cb(error)
+      }, 100)  
+    }),
+    pull.collect(function (err, five) {
+      t.equal(err, error, 'should return err')
+      t.deepEqual(five, [1,2,3,4], 'should skip failed item')
+      t.end()
+    })
+  )
+})
