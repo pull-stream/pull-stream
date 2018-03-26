@@ -117,6 +117,29 @@ var pull = require('pull-stream')
 pull(random, logger)
 ```
 
+### Creating reusable streams
+
+When working with pull streams it is common to create functions that return a stream.
+This is because streams contain mutable state and so can only be used once. 
+In the above example, once `random`  has been connected to a sink and has produced 5 random numbers it will not produce any more random numbers if connected to another sink.
+
+Therefore, use a function like this to create a random number generating stream that can be reused:
+
+```js
+
+// create a stream of n random numbers
+function createRandomStream (n) {
+  return function randomReadable (end, cb) {
+    if(end) return cb(end)
+    if(0 > --n) return cb(true)
+    cb(null, Math.random())
+  }
+}
+
+pull(createRandomStream(5), logger)
+```
+
+
 ### Through
 
 A through stream is a reader on one end and a readable on the other.
@@ -134,7 +157,7 @@ function double (read) {
   }
 }
 
-pull(random, double, logger)
+pull(createRandomStream(5), double, logger)
 ```
 
 ### Pipeability
@@ -311,7 +334,7 @@ it directly:
 ```js
 var pull = require('pull-stream/pull')
 
-pull(random(), logger())
+pull(createRandomStream(5), logger())
 ```
 
 
