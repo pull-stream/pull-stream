@@ -99,7 +99,7 @@ tape("async map should pass it's own error", function (t) {
       end ? cb(true) : cb(null, i+1)
     },
     pull.asyncMap(function (data, cb) {
-      setTimeout(() => {
+      setTimeout(function () {
         if(++i < 5) cb(null, data)
         else {
           cb(error)

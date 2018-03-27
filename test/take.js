@@ -126,7 +126,7 @@ test('take should throw error on last read', function (t) {
     pull.take(function(n) {return n<5}, {last: true}),
     // pull.take(5),
     pull.asyncMap(function (data, cb) {
-      setTimeout(() => {
+      setTimeout(function () {
         if(++i < 5) cb(null, data)
         else cb(error)
       }, 100)  
