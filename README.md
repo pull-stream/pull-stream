@@ -68,14 +68,14 @@ The `read` function *must not* be called until the previous call has called back
 Unless, it is a call to abort the stream due to an error (`read(truthy, cb)`).
 
 ```js
-//a stream of random numbers.
-function random (n) {
-  return function (end, cb) {
-    if(end) return cb(end)
-    //only read n times, then stop.
-    if(0>--n) return cb(true)
-    cb(null, Math.random())
-  }
+var n = 5;
+
+// random is a source 5 of random numbers.
+function random (end, cb) {
+  if(end) return cb(end)
+  // only read n times, then stop.
+  if(0 > --n) return cb(true)
+  cb(null, Math.random())
 }
 
 ```
@@ -91,27 +91,22 @@ and [Sinks](./docs/sinks/index.md)
 are reader streams.
 
 ```js
-//read source and log it.
-function logger () {
-  return function (read) {
-    read(null, function next(end, data) {
-      if(end === true) return
-      if(end) throw end
+// logger reads a source and logs it.
+function logger (read) {
+  read(null, function next(end, data) {
+    if(end === true) return
+    if(end) throw end
 
-      console.log(data)
-      read(null, next)
-    })
-  }
+    console.log(data)
+    read(null, next)
+  })
 }
 ```
 
 Since Sources and Sinks are functions, you can pass them to each other!
 
 ```js
-var rand = random(100)
-var log = logger()
-
-log(rand) //"pipe" the streams.
+logger(random) //"pipe" the streams.
 
 ```
 
@@ -120,8 +115,31 @@ but, it's easier to read if you use's pull-stream's `pull` method
 ```js
 var pull = require('pull-stream')
 
-pull(random(), logger())
+pull(random, logger)
 ```
+
+### Creating reusable streams
+
+When working with pull streams it is common to create functions that return a stream.
+This is because streams contain mutable state and so can only be used once. 
+In the above example, once `random`  has been connected to a sink and has produced 5 random numbers it will not produce any more random numbers if connected to another sink.
+
+Therefore, use a function like this to create a random number generating stream that can be reused:
+
+```js
+
+// create a stream of n random numbers
+function createRandomStream (n) {
+  return function randomReadable (end, cb) {
+    if(end) return cb(end)
+    if(0 > --n) return cb(true)
+    cb(null, Math.random())
+  }
+}
+
+pull(createRandomStream(5), logger)
+```
+
 
 ### Through
 
@@ -130,14 +148,16 @@ It's a function that takes a `read` function (a Sink),
 and returns another `read` function (a Source).
 
 ```js
-function map (read, map) {
-  //return a readable function!
-  return function (end, cb) {
+// double is a through stream that doubles values.
+function double (read) {
+  return function readable (end, cb) {
     read(end, function (end, data) {
-      cb(end, data != null ? map(data) : null)
+      cb(end, data != null ? data * 2 : null)
     })
   }
 }
+
+pull(createRandomStream(5), double, logger)
 ```
 
 ### Pipeability
@@ -156,7 +176,7 @@ and if you pull together through streams, it gives you a new through stream.
 ```js
 var tripleThrough =
   pull(through1(), through2(), through3())
-//THE THREE THROUGHS BECOME ONE
+// The three through streams become one.
 
 pull(source(), tripleThrough, sink())
 ```
@@ -314,7 +334,7 @@ it directly:
 ```js
 var pull = require('pull-stream/pull')
 
-pull(random(), logger())
+pull(createRandomStream(5), logger())
 ```
 
 
