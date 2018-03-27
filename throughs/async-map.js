@@ -12,8 +12,12 @@ module.exports = function asyncMap (map) {
       if(aborted) return cb(aborted)
       if(abort) {
         aborted = abort
-        if(!busy) read(abort, cb)
-        else read(abort, function () {
+        if(!busy) read(abort, function (err) {
+          //incase the source has already ended normally,
+          //we should pass our own error.
+          cb(abort)
+        })
+        else read(abort, function (err) {
           //if we are still busy, wait for the mapper to complete.
           if(busy) abortCb = cb
           else cb(abort)
@@ -39,5 +43,10 @@ module.exports = function asyncMap (map) {
     }
   }
 }
+
+
+
+
+
 
 
