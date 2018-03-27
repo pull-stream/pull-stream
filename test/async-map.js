@@ -90,4 +90,27 @@ tape('asyncMap aborts when map errors', function (t) {
   )
 })
 
+tape("async map should pass it's own error", function (t) {
+  var i = 0
+  var error = new Error('error on last call')
+
+  pull(
+    function (end, cb) {
+      end ? cb(true) : cb(null, i+1)
+    },
+    pull.asyncMap((data, cb) => {
+      setTimeout(() => {
+        if(++i < 5) cb(null, data)
+        else {
+          cb(error)
+        }
+      }, 100)  
+    }),
+    pull.collect(function (err, five) {
+      t.equal(err, error, 'should return err')
+      t.deepEqual(five, [1,2,3,4], 'should skip failed item')
+      t.end()
+    })
+  )
+})
 
