@@ -21,7 +21,7 @@ module.exports = function take (test, opts) {
     }
 
     return function (end, cb) {
-      if(ended)            last ? terminate(cb) : cb(ended)
+      if(ended && !end) last ? terminate(cb) : cb(ended)
       else if(ended = end) read(ended, cb)
       else
         read(null, function (end, data) {
