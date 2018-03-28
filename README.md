@@ -65,7 +65,7 @@ To signify an end state, the stream eventually returns `cb(err)` or `cb(true)`.
 When signifying an end state, `data` *must* be ignored.
 
 The `read` function *must not* be called until the previous call has called back.
-Unless, it is a call to abort the stream due to an error (`read(truthy, cb)`).
+Unless, it is a call to abort the stream (`read(Error || true, cb)`).
 
 ```js
 //a stream of random numbers.
