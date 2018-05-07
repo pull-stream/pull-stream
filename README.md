@@ -25,16 +25,16 @@ pull(
   })
 )
 ```
-note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
+Note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
 
-to grok how pull-streams work, read through [pull-streams by example](https://github.com/dominictarr/pull-stream-examples)
+To grok how pull-streams work, read through [pull-streams by example](https://github.com/dominictarr/pull-stream-examples)
 
 ## How do I do X with pull-streams?
 
 There is a module for that!
 
 Check the [pull-stream FAQ](https://github.com/pull-stream/pull-stream-faq)
-and post an issue if you have a question that is not on that.
+and post an issue if you have a question that is not covered.
 
 ## Compatibily with node streams
 
@@ -55,17 +55,17 @@ See also:
 * [Throughs](./docs/throughs/index.md)
 * [Sinks](./docs/sinks/index.md)
 
-### Source (aka, Readable)
+### Source (readable stream that produces values)
 
-The readable stream is just a `function read(end, cb)`,
+A Source is a function `read(end, cb)`,
 that may be called many times,
-and will (asynchronously) `cb(null, data)` once for each call.
+and will (asynchronously) call `cb(null, data)` once for each call.
 
 To signify an end state, the stream eventually returns `cb(err)` or `cb(true)`.
-When indicating a terminal state, `data` *must* be ignored.
+When signifying an end state, `data` *must* be ignored.
 
 The `read` function *must not* be called until the previous call has called back.
-Unless, it is a call to abort the stream (`read(truthy, cb)`).
+Unless, it is a call to abort the stream (`read(Error || true, cb)`).
 
 ```js
 var n = 5;
@@ -80,10 +80,11 @@ function random (end, cb) {
 
 ```
 
-### Sink; (aka, Reader, "writable")
+### Sink (reader or writable stream that consumes values)
 
-A sink is just a `reader` function that calls a Source (read function),
-until it decideds to stop, or the readable ends. `cb(err || true)`
+A Sink is a function `reader(read)` that calls a Source (`read(null, cb)`),
+until it decides to stop (by calling `read(true, cb)`), or the readable ends (`read` calls
+`cb(Error || true)`
 
 All [Throughs](./docs/throughs/index.md)
 and [Sinks](./docs/sinks/index.md)
@@ -102,7 +103,7 @@ function logger (read) {
 }
 ```
 
-Since these are just functions, you can pass them to each other!
+Since Sources and Sinks are functions, you can pass them to each other!
 
 ```js
 logger(random) //"pipe" the streams.
@@ -142,10 +143,9 @@ pull(createRandomStream(5), logger)
 
 ### Through
 
-A through stream is a reader on one end and a readable on the other.
-It's Sink that returns a Source.
-That is, it's just a function that takes a `read` function,
-and returns another `read` function.
+A through stream is both a reader (consumes values) and a readable (produces values).
+It's a function that takes a `read` function (a Sink),
+and returns another `read` function (a Source).
 
 ```js
 // double is a through stream that doubles values.
