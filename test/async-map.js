@@ -125,7 +125,7 @@ tape('asyncMap aborts when map errors', function (t) {
   )
 })
 
-tape("async map should pass it's own error", function (t) {
+tape("async map should pass its own error", function (t) {
   var i = 0
   var error = new Error('error on last call')
 
