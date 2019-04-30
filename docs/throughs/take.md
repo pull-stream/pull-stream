@@ -46,7 +46,7 @@ pull(
 ```js
 pull(
   pull.values([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-  pull.take(n => n < 4.6), { last: false }),  // exclude the last value test (5)
+  pull.take(n => n < 4.6), { last: false }),  // exclude the last value tested (5)
   pull.collect(function (err, results) {
     console.log(results)
     // => [1, 2, 3, 4]
