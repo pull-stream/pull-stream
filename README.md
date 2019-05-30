@@ -27,7 +27,7 @@ pull(
 ```
 Note that `pull(a, b, c)` is basically the same as `a.pipe(b).pipe(c)`.
 
-To grok how pull-streams work, read through [pull-streams by example](https://github.com/dominictarr/pull-stream-examples)
+To grok how pull-streams work, read through [pull-streams workshop](https://github.com/pull-stream/pull-stream-workshop)
 
 ## How do I do X with pull-streams?
 
