@@ -192,7 +192,7 @@ Duplex streams, which are used to communicate between two things,
 messages go both ways, so instead of a single function that represents the stream,
 you need a pair of streams. `{source: sourceStream, sink: sinkStream}`
 
-pipe duplex streams like this:
+Pipe duplex streams like this:
 
 ``` js
 var a = duplex()
@@ -212,6 +212,15 @@ pull(a, b, a)
 //"pull from a to b and then back to a"
 
 ```
+
+This means two duplex streams communicating actually forms two completely
+independent pipelines:
+1. Side1's sink pulling from Side2's source
+2. Side2's sink pulling from Side1's source
+
+As a result, one pipeline might finish or error out before or after the other.
+A duplex stream is only "finished" once both pipelines are done communicating.
+
 
 ## Design Goals & Rationale
 
