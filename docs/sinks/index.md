@@ -16,7 +16,7 @@ See also:
 
 ## [drain](./drain.md)
 ## [reduce](./reduce.md)
-## [concat](./collect.md)
+## [concat](./concat.md)
 ## [collect](./collect.md)
 ## [onEnd](./on-end.md)
 ## [log](./log.md)
