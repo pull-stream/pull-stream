@@ -27,3 +27,7 @@ function() {
     pull.drain()
   );
 }, getLifecycleConfigs(setValues));
+
+if (require.main === module) {
+  module.exports.run();
+}

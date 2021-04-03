@@ -95,3 +95,7 @@ module.exports = new Benchmark(
     }
   }
 );
+
+if (require.main === module) {
+  module.exports.run();
+}

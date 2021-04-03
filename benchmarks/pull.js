@@ -55,3 +55,7 @@ module.exports = new Benchmark('pull', {
     pull(pull(source, through), sink)
   }*/
 // ], N=100000)
+
+if (require.main === module) {
+  module.exports.run();
+}
