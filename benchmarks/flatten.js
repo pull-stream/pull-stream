@@ -1,6 +1,6 @@
 const faker = require('faker');
 const pull = require('../');
-const Benchmark = require("benchmark");
+const Benchmark = require('benchmark');
 const getLifecycleConfigs = require('./helpers/lifecycle-configs');
 
 faker.seed(24849320);
@@ -19,7 +19,7 @@ function setValues () {
   );
 }
 
-module.exports = new Benchmark("flatten",
+module.exports = new Benchmark('flatten',
 function() {
   pull(
     values,

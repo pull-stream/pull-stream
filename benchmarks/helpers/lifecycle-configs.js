@@ -1,5 +1,5 @@
 const prettyBytes = require('pretty-bytes');
-const gc = require("expose-gc/function");
+const gc = require('expose-gc/function');
 
 function getLifecycleConfigs(notCountedFn) {
   let countMem = 0;
@@ -45,11 +45,11 @@ function getLifecycleConfigs(notCountedFn) {
   function onComplete(event) {
     console.log();
     console.log(event.target.toString());
-    console.log("Heap Change - " +
-      "max: " + prettyBytes(streamingMaxMem) +
-      ", min:" + prettyBytes(streamingMinMem) +
-      ", mean:" + prettyBytes(streamingMeanMem) +
-      ", std dev:" + prettyBytes(Math.sqrt(streamingVarianceTotal / (countMem - 1)))
+    console.log('Heap Change - ' +
+      'max: ' + prettyBytes(streamingMaxMem) +
+      ', min:' + prettyBytes(streamingMinMem) +
+      ', mean:' + prettyBytes(streamingMeanMem) +
+      ', std dev:' + prettyBytes(Math.sqrt(streamingVarianceTotal / (countMem - 1)))
     );
   }
 
