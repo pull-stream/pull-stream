@@ -4,7 +4,7 @@
 
 ### `keys = require('pull-stream/sources/keys')`
 
-### `keys(array | object, onAbort)`
+### `keys(array | object)`
 
 stream the key names from an object (or array)
 

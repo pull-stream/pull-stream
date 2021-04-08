@@ -4,7 +4,7 @@
 
 ### `count = require('pull-stream/sources/count')`
 
-### `count(max, onAbort)`
+### `count(max)`
 
 create a stream that outputs `0 ... max`.
 by default, `max = Infinity`, see
