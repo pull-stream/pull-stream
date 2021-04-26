@@ -6,7 +6,7 @@ test('filtered randomnes', function (t) {
   pull(
     pull.infinite(),
     pull.filter(function (d) {
-      console.log('f', d)
+      if (process.env.TEST_VERBOSE) console.log('f', d)
       return d > 0.5
     }),
     pull.take(100),
@@ -16,7 +16,7 @@ test('filtered randomnes', function (t) {
         t.ok(d > 0.5)
         t.ok(d <= 1)
       })
-      console.log(array)
+      if (process.env.TEST_VERBOSE) console.log(array)
       t.end()
     })
   )
@@ -32,7 +32,7 @@ test('filter with regexp', function (t) {
     pull.take(37),
     pull.collect(function (err, array) {
       t.equal(array.length, 37)
-      console.log(array)
+      if (process.env.TEST_VERBOSE) console.log(array)
       array.forEach(function (d) {
         t.equal(d.indexOf('e'), -1)
       })

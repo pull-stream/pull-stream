@@ -45,9 +45,9 @@ test('join through streams with pipe', function (t) {
   pull(
     read,
     pull.collect(function (err, array) {
-      console.log(array)
+      if (process.env.TEST_VERBOSE) console.log(array)
       t.deepEqual(
-        array, 
+        array,
         [ '*** BILLY! ***', '*** JOE! ***', '*** ZEKE! ***' ]
       )
       t.end()
