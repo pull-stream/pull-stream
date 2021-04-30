@@ -3,6 +3,12 @@
 module.exports = function drain (op, done) {
   var read, abort
 
+  // Declared here so that it captures the drain's stack trace
+  var doneLackingErr
+  if (!done) {
+    doneLackingErr = new Error('no done callback supplied')
+  }
+
   function sink (_read) {
     read = _read
     if(abort) return sink.abort()
@@ -18,8 +24,10 @@ module.exports = function drain (op, done) {
             if(end = end || abort) {
               loop = false
               if(done) done(end === true ? null : end)
-              else if(end && end !== true)
+              else if(end && end !== true) {
+                console.warn(doneLackingErr)
                 throw end
+              }
             }
             else if(op && false === op(data) || abort) {
               loop = false
