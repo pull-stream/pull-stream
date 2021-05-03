@@ -42,7 +42,7 @@ var log = curry(function (read) {
     return function (abort, cb) {
       read(abort, function (end, data) {
         if(end) return cb(end)
-        console.error(data)
+        if (process.env.TEST_VERBOSE) console.error(data)
         cb(null, data)
       })
     }
@@ -55,7 +55,7 @@ tape('wrap pull streams into stream', function (t) {
     map(function (e) { return e*e }),
     log(),
     sum(function (err, value) {
-      console.log(value)
+      if (process.env.TEST_VERBOSE) console.log(value)
       t.equal(value, 385)
       t.end()
     })
@@ -72,7 +72,7 @@ tape('turn pull(through,...) -> Through', function (t) {
       log()
     ),
     sum(function (err, value) {
-      console.log(value)
+      if (process.env.TEST_VERBOSE) console.log(value)
       t.equal(value, 385)
       t.end()
     })
@@ -100,7 +100,7 @@ tape("writable pull() should throw when called twice", function (t) {
   var stream = pull(
     map(function (e) { return e*e }),
     sum(function (err, value) {
-      console.log(value)
+      if (process.env.TEST_VERBOSE) console.log(value)
       t.equal(value, 385)
     })
   )

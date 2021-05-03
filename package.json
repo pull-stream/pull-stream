@@ -10,10 +10,13 @@
   "devDependencies": {
     "fastbench": "^1.0.1",
     "pull-abortable": "~2.0.0",
-    "tape": "~2.12.3"
+    "tap-bail": "^1.0.0",
+    "tap-spec": "^5.0.0",
+    "tape": "~5.2.2"
   },
   "scripts": {
-    "test": "set -e; for t in test/*.js; do node $t; done"
+    "test": "tape test/*.js | tap-bail | tap-spec",
+    "test-verbose": "TEST_VERBOSE npm test"
   },
   "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)",
   "license": "MIT"

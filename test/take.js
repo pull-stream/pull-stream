@@ -25,14 +25,14 @@ test('through - onEnd', function (t) {
     pull.values(values),
     pull.take(10),
     pull.through(null, function (err) {
-      console.log('end')
+      if (process.env.TEST_VERBOSE) console.log('end')
       t.ok(true)
       process.nextTick(function () {
         t.end()
       })
     }),
     pull.collect(function (err, ary) {
-      console.log(ary)
+      if (process.env.TEST_VERBOSE) console.log(ary)
       t.ok(true)
     })
   )
@@ -67,7 +67,7 @@ test('take 5 causes 5 reads upstream', function (t) {
     function (read) {
       return function (end, cb) {
         if (end !== true) reads++
-        console.log(reads, end)
+        if (process.env.TEST_VERBOSE) console.log(reads, end)
         read(end, cb)
       }
     },
@@ -120,7 +120,7 @@ test("take doesn't abort until the last read", function (t) {
 test('take should throw error on last read', function (t) {
   var i = 0
   var error = new Error('error on last call')
-  
+
   pull(
     pull.values([1,2,3,4,5,6,7,8,9,10]),
     pull.take(function(n) {return n<5}, {last: true}),
@@ -129,7 +129,7 @@ test('take should throw error on last read', function (t) {
       setTimeout(function () {
         if(++i < 5) cb(null, data)
         else cb(error)
-      }, 100)  
+      }, 100)
     }),
     pull.collect(function (err, five) {
       t.equal(err, error, 'should return err')

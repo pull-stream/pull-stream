@@ -9,7 +9,7 @@ tape('async-map', function (t) {
       return cb(null, data + 1)
     }),
     pull.collect(function (err, ary) {
-      console.log(ary)
+      if (process.env.TEST_VERBOSE) console.log(ary)
       t.equal(ary.length, 21)
       t.end()
     })
@@ -112,7 +112,7 @@ tape('asyncMap aborts when map errors', function (t) {
   var ERR = new Error('abort')
   pull(
     pull.values([1,2,3], function (err) {
-      console.log('on abort')
+      if (process.env.TEST_VERBOSE) console.log('on abort')
       t.equal(err, ERR, 'abort gets error')
       t.end()
     }),

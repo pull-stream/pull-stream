@@ -25,7 +25,7 @@ test('flatten - number of reads', function (t) {
     pull.flatten(),
     pull.through(function() {
       reads++
-      console.log('READ', reads)
+      if (process.env.TEST_VERBOSE) console.log('READ', reads)
     }),
     pull.take(2),
     pull.collect(function (err, numbers) {
@@ -83,7 +83,7 @@ test('abort flatten', function (t) {
     }),
     pull.flatten()
   )
-  
+
   read(null, function(err, data) {
     t.notOk(err)
     t.equal(data,1)
@@ -109,7 +109,7 @@ test('abort flatten before 1st read', function (t) {
     }),
     pull.flatten()
   )
-  
+
   read(true, function(err, data) {
     t.equal(err, true)
     t.notOk(data)
