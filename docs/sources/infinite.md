@@ -4,7 +4,7 @@
 
 ### `infinite = require('pull-stream/sources/infinite')`
 
-### `infinite(generator, onAbort)`
+### `infinite(generator)`
 
 create an unending stream by repeatedly calling a generator
 function (by default, `Math.random`)
