@@ -2,7 +2,6 @@
 
 var tape = require('tape')
 var pull = require('../')
-//var abortable = require('pull-abortable')
 
 function hang (values, onAbort) {
   var i = 0
