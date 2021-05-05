@@ -1,5 +1,6 @@
-const bench = require('fastbench')
+const Benchmark = require('benchmark')
 const pull = require('../')
+var getLifecycleConfigs = require('./helpers/lifecycle-configs');
 
 const values = [
   JSON.stringify({ hello: 'world' }),
@@ -7,8 +8,10 @@ const values = [
   JSON.stringify({ bin: 'baz' })
 ]
 
-const run = bench([
-  function pull3 (done) {
+module.exports = new Benchmark('pull', {
+  ...getLifecycleConfigs(),
+  defer: true,
+  fn (deferred) {
     const source = pull.values(values)
     const through = pull.asyncMap(function (val, done) {
       const json = JSON.parse(val)
@@ -17,10 +20,14 @@ const run = bench([
 
     const sink = pull.collect(function (err, array) {
       if (err) return console.error(err)
-      setImmediate(done)
+      deferred.resolve()
     })
     pull(source, through, sink)
-  }/*,
+  }
+});
+
+// const run = bench([
+  /*,
   function pull_compose (done) {
     const source = pull.values(values)
     const through = pull.asyncMap(function (val, done) {
@@ -47,11 +54,8 @@ const run = bench([
     })
     pull(pull(source, through), sink)
   }*/
-], N=100000)
+// ], N=100000)
 
-var heap = process.memoryUsage().heapUsed
-run(function () {
-  console.log((process.memoryUsage().heapUsed - heap)/N)
-})
-
-
+if (require.main === module) {
+  module.exports.run();
+}

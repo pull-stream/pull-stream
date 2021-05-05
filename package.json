@@ -8,8 +8,10 @@
     "url": "git://github.com/pull-stream/pull-stream.git"
   },
   "devDependencies": {
+    "benchmark": "^2.1.4",
+    "expose-gc": "^1.0.0",
     "faker": "^5.5.1",
-    "fastbench": "^1.0.1",
+    "pretty-bytes": "^5.6.0",
     "pull-abortable": "~2.0.0",
     "tap-bail": "^1.0.0",
     "tap-spec": "^5.0.0",

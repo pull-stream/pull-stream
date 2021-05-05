@@ -1,7 +1,7 @@
 const faker = require('faker');
 const pull = require('../');
-
-const bench = require('fastbench')
+const Benchmark = require('benchmark');
+const getLifecycleConfigs = require('./helpers/lifecycle-configs');
 
 faker.seed(24849320);
 function getRandomValues(nestLevel) {
@@ -10,29 +10,24 @@ function getRandomValues(nestLevel) {
   .map(e => faker.datatype.number());
 }
 
-const N=100;
-const randomValues = Array(N)
-  .fill(1)
-  .map(e => pull.values(
+let values;
+function setValues () {
+  values = pull.values(
     new Array(500)
     .fill(1)
     .map(e => pull.values(getRandomValues()))
-  ));
+  );
+}
 
-let i = 0;
-const run = bench([
-  function flattenBench (done) {
-    pull(
-      randomValues[i++],
-      pull.flatten(),
-      pull.drain()
-    );
-    done();
-  }]
-, N)
+module.exports = new Benchmark('flatten',
+function() {
+  pull(
+    values,
+    pull.flatten(),
+    pull.drain()
+  );
+}, getLifecycleConfigs(setValues));
 
-var heap = process.memoryUsage().heapUsed
-run(function () {
-  console.log((process.memoryUsage().heapUsed - heap)/N)
-})
-
+if (require.main === module) {
+  module.exports.run();
+}

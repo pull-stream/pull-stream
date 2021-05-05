@@ -1,5 +1,6 @@
 var stream = require('stream')
 var inherits = require('util').inherits
+var getLifecycleConfigs = require('./helpers/lifecycle-configs');
 
 inherits(Values, stream.Readable)
 
@@ -67,31 +68,34 @@ Collect.prototype.end = function () {
   this._cb(null, this._ary)
 }
 
-var bench = require('fastbench')
+var Benchmark = require('benchmark');
 const values = [
   JSON.stringify({ hello: 'world' }),
   JSON.stringify({ foo: 'bar' }),
   JSON.stringify({ bin: 'baz' })
 ]
 
-const run = bench([
-  function pull3 (done) {
-  var c = new Collect(function (err, array) {
-      if (err) return console.error(err)
-      if(array.length < 3) throw new Error('wrong array')
-      setImmediate(done)
-    })
+module.exports = new Benchmark(
+  'node',
+  {
+    ...getLifecycleConfigs(),
+    defer: true,
+    fn (deferred) {
+    var c = new Collect(function (err, array) {
+        if (err) return console.error(err)
+        if(array.length < 3) throw new Error('wrong array')
+        deferred.resolve()
+      })
 
-    new Values(values)
-    .pipe(new Async(function (val, done) {
-      done(null, val)
-    }))
-    .pipe(c)
-  }]
-, N=100000)
+      new Values(values)
+      .pipe(new Async(function (val, done) {
+        done(null, val)
+      }))
+      .pipe(c)
+    }
+  }
+);
 
-var heap = process.memoryUsage().heapUsed
-run(function () {
-  console.log((process.memoryUsage().heapUsed - heap)/N)
-})
-
+if (require.main === module) {
+  module.exports.run();
+}
