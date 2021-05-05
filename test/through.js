@@ -6,7 +6,7 @@ require('tape')('through - onEnd', function (t) {
   pull(
     pull.infinite(),
     pull.through(null, function (err) {
-      console.log('end')
+      if (process.env.TEST_VERBOSE) console.log('end')
       t.ok(true)
       process.nextTick(function () {
         t.end()
@@ -14,7 +14,7 @@ require('tape')('through - onEnd', function (t) {
     }),
     pull.take(10),
     pull.collect(function (err, ary) {
-      console.log(ary)
+      if (process.env.TEST_VERBOSE) console.log(ary)
       t.ok(true)
     })
   )

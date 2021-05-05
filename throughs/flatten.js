@@ -18,9 +18,9 @@ module.exports = function flatten () {
 
       function nextChunk () {
         _read(null, function (err, data) {
-          if (err === true) nextStream()
-          else if (err) {
-            read(true, function(abortErr) {
+          if (err) {
+            if (err === true) nextStream()
+            else read(true, function(abortErr) {
               // TODO: what do we do with the abortErr?
               cb(err)
             })
@@ -33,9 +33,9 @@ module.exports = function flatten () {
         read(null, function (end, stream) {
           if(end)
             return cb(end)
-          if(Array.isArray(stream) || stream && 'object' === typeof stream)
+          if(stream && 'object' === typeof stream)
             stream = values(stream)
-          else if('function' != typeof stream)
+          else if ('function' !== typeof stream)
             stream = once(stream)
           _read = stream
           nextChunk()
